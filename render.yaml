@@ -1,0 +1,22 @@
+# Render Blueprint: one Docker web service (site + API) with a persistent disk for the SQLite database.
+# Render → New → Blueprint → pick this repo. Fill the secrets marked "sync: false" in the dashboard.
+services:
+  - type: web
+    name: halhala
+    runtime: docker
+    plan: starter            # persistent disks need a paid instance
+    healthCheckPath: /api/config
+    autoDeploy: true
+    disk:
+      name: halhala-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - { key: DATA_DIR, value: /data }
+      - { key: PUBLIC_URL, sync: false }          # e.g. https://halhala.onrender.com (or your own domain)
+      - { key: ADMIN_EMAILS, sync: false }
+      - { key: TELEGRAM_BOT_TOKEN, sync: false }
+      - { key: TELEGRAM_CHAT_ID, sync: false }
+      - { key: ANTHROPIC_API_KEY, sync: false }
+      - { key: EPOINT_PUBLIC_KEY, sync: false }
+      - { key: EPOINT_PRIVATE_KEY, sync: false }

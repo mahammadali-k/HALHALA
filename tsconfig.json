@@ -1,7 +1,7 @@
 {
-  "compilerOptions": {
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "ignoreDeprecations": "5.0"
-  }
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

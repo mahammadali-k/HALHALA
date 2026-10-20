@@ -14,7 +14,7 @@
 .env.local
 .idea
 .vscode/*
-data/
+/data/
 dist
 dist-ssr
 lerna-debug.log*

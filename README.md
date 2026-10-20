@@ -14,6 +14,14 @@ docker build -t halhala . && docker run -p 8787:8787 -v halhala-data:/data --env
 ```
 Needs Node 22.13+ (uses the built-in `node:sqlite`). All data lives in one SQLite file, `data/halhala.db` (`DATA_DIR`) — **back it up** and use a persistent disk when hosting.
 
+## Deploy
+The site needs a **Node server with a persistent disk** (accounts, orders and stock live in SQLite), so use a host that runs a container or Node process:
+- **Render** (easiest): New → Blueprint → select this repo (`render.yaml`). Add the secrets in the dashboard, then set `PUBLIC_URL` to the service URL.
+- **Fly.io**: see the comments in `fly.toml`.  **Any VPS**: `docker build` + `docker run` (see *Run* above).
+- Static-only hosts (Vercel/Netlify/GitHub Pages) also build the site, but without the API: no accounts, no online orders — the shop falls back to "send the order via Instagram/TikTok". `vercel.json` and `public/_redirects` make deep links work there.
+
+Before pushing, make sure everything is tracked: `git add -A && git status` (all of `src/data/` must be listed).
+
 ## Setup checklist
 | What | Where |
 |---|---|

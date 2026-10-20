@@ -1,0 +1,24 @@
+# Fly.io alternative:  fly launch --no-deploy --copy-config  →  fly volumes create halhala_data --size 1  →  fly secrets set ADMIN_EMAILS=... PUBLIC_URL=...  →  fly deploy
+app = "halhala"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DATA_DIR = "/data"
+  PORT = "8787"
+
+[mounts]
+  source = "halhala_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = "off"
+  min_machines_running = 1
+  [[http_service.checks]]
+    path = "/api/config"
+    interval = "30s"
+    timeout = "5s"
