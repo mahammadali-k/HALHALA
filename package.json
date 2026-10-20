@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "-b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
     "start": "node --env-file-if-exists=.env server/index.mjs"
