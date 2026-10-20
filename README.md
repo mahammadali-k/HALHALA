@@ -18,7 +18,11 @@ Needs Node 22.13+ (uses the built-in `node:sqlite`). All data lives in one SQLit
 The site needs a **Node server with a persistent disk** (accounts, orders and stock live in SQLite), so use a host that runs a container or Node process:
 - **Render** (easiest): New → Blueprint → select this repo (`render.yaml`). Add the secrets in the dashboard, then set `PUBLIC_URL` to the service URL.
 - **Fly.io**: see the comments in `fly.toml`.  **Any VPS**: `docker build` + `docker run` (see *Run* above).
-- Static-only hosts (Vercel/Netlify/GitHub Pages) also build the site, but without the API: no accounts, no online orders — the shop falls back to "send the order via Instagram/TikTok". `vercel.json` and `public/_redirects` make deep links work there.
+- **Vercel (site) + Render (API)** — the current setup. Render runs this repo (`render.yaml`, service `halhala-az`) and holds the database; Vercel serves the built site and, via `vercel.json`, forwards every `/api/*` request to Render, so the browser sees one domain (no CORS, first-party cookies). Steps:
+  1. Render → New → Blueprint → this repo. Set the secrets; **`PUBLIC_URL` = your Vercel domain** (e.g. `https://halhala-store.vercel.app`).
+  2. If Render's URL is not `https://halhala-az.onrender.com`, put the real one in `vercel.json` (`rewrites[0].destination`).
+  3. Push → Vercel redeploys. Epoint *Result URL*: `<Vercel domain>/api/payments/epoint/callback`.
+- Static-only hosting without an API (Vercel alone, Netlify, GitHub Pages) still builds the site, but there are no accounts or online orders — the shop falls back to "send the order via Instagram/TikTok".
 
 Before pushing, make sure everything is tracked: `git add -A && git status` (all of `src/data/` must be listed).
 

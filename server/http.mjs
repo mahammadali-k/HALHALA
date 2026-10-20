@@ -47,28 +47,32 @@ export function limiter(max, windowMs) {
   }
 }
 
-/**
- * CSRF defence for state-changing requests: the session cookie is SameSite=Lax, and we additionally
- * require a custom header (cannot be sent cross-site without CORS) and a same-origin Origin when present.
- */
-export function assertSameOrigin(req) {
-  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return
-  if (req.headers['x-requested-with'] !== 'halhala') throw new ApiError(403, 'forbidden')
-  const origin = req.headers.origin
-  if (origin) {
-    let host
-    try { host = new URL(origin).host } catch { throw new ApiError(403, 'forbidden') }
-    if (host !== req.headers.host && host !== req.headers['x-forwarded-host']) throw new ApiError(403, 'forbidden')
+/** Hosts that may legitimately send browser requests: this server, the proxy in front of it, PUBLIC_URL and ALLOWED_ORIGINS. */
+function trustedHosts(req) {
+  const hosts = new Set([req.headers.host, req.headers['x-forwarded-host']].filter(Boolean))
+  for (const u of [process.env.PUBLIC_URL, ...(process.env.ALLOWED_ORIGINS ?? '').split(',')]) {
+    try { if (u?.trim()) hosts.add(new URL(u.trim()).host) } catch { /* ignore malformed entry */ }
   }
+  return hosts
 }
 
-/** Same-origin check for endpoints that do not use the custom header (e.g. the streaming chat). */
+/** Throws unless the request's Origin (when present) belongs to a trusted host. */
 export function assertOriginIfPresent(req) {
   const origin = req.headers.origin
   if (!origin) return
   let host
   try { host = new URL(origin).host } catch { throw new ApiError(403, 'forbidden') }
-  if (host !== req.headers.host && host !== req.headers['x-forwarded-host']) throw new ApiError(403, 'forbidden')
+  if (!trustedHosts(req).has(host)) throw new ApiError(403, 'forbidden')
+}
+
+/**
+ * CSRF defence for state-changing requests: the session cookie is SameSite=Lax, and we additionally
+ * require a custom header (cannot be sent cross-site without CORS) and a trusted Origin when present.
+ */
+export function assertSameOrigin(req) {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return
+  if (req.headers['x-requested-with'] !== 'halhala') throw new ApiError(403, 'forbidden')
+  assertOriginIfPresent(req)
 }
 
 /** Reads an application/x-www-form-urlencoded body (used by the payment gateway callback). */

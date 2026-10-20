@@ -2,7 +2,7 @@
 # Render → New → Blueprint → pick this repo. Fill the secrets marked "sync: false" in the dashboard.
 services:
   - type: web
-    name: halhala
+    name: halhala-az        # → https://halhala-az.onrender.com (if the name is taken, Render adds a suffix: update vercel.json to match)
     runtime: docker
     plan: starter            # persistent disks need a paid instance
     healthCheckPath: /api/config
