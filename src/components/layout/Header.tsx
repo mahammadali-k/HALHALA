@@ -8,8 +8,6 @@ import { iconBtn } from '@/components/ui/styles'
 import { BagIcon, MenuIcon, SearchIcon, UserIcon } from '@/components/ui/icons'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
-import { sectionTag } from '@/data/nav'
-import { useCatalog } from '@/context/CatalogContext'
 import { useI18n } from '@/i18n'
 import { LangSwitch } from './LangSwitch'
 import { ThemeToggle } from './ThemeToggle'
@@ -21,7 +19,6 @@ export function Header() {
   const { count, open: openCart } = useCart()
   const { t } = useI18n()
   const { user } = useAuth()
-  const { store } = useCatalog()
   const router = useRouter()
   const path = usePathname()
   const [menu, setMenu] = useState(false)
@@ -41,12 +38,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:bg-accent focus:px-3 focus:py-2 focus:text-ink">{t('skip')}</a>
-      {/* design annotation strip: [ CURRENT SECTION ] … [ EST. YEAR ] */}
-      <div className="container-x hidden items-center justify-between pt-2 md:flex">
-        <span className="tag">[ {t(sectionTag(path))} ]</span>
-        {store.est ? <span className="tag">[ {t('tag.est', { year: store.est })} ]</span> : <span />}
-      </div>
-      <div className="container-x grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 md:-mt-1 md:h-[3.75rem] lg:gap-6">
+      <div className="container-x grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 md:h-[3.75rem] lg:gap-6">
         <Link href="/" aria-label="HALHALA — home" className="shrink-0"><Wordmark /></Link>
         <div className="flex justify-center"><DesktopNav /></div>
         <div className="flex items-center gap-0.5">

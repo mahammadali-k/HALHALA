@@ -40,18 +40,3 @@ export const nav: NavItem[] = [
     ],
   },
 ]
-
-/** Which "[ SECTION ]" label the header shows for a path. */
-export const sectionTag = (path: string): Key =>
-  path === '/' ? 'tag.home'
-  : path.startsWith('/shop') || path.startsWith('/collection') ? 'tag.collection'
-  : path.startsWith('/product') ? 'tag.product'
-  : path.startsWith('/about') ? 'tag.about'
-  : path.startsWith('/contact') ? 'tag.contact'
-  : path.startsWith('/info') ? 'tag.info'
-  : path.startsWith('/cart') ? 'tag.cart'
-  : path.startsWith('/checkout') ? 'tag.checkout'
-  : path.startsWith('/order') ? 'tag.order'
-  : path.startsWith('/admin') ? 'tag.admin'
-  : path.startsWith('/account') || path.startsWith('/login') || path.startsWith('/register') ? 'tag.account'
-  : 'tag.home'

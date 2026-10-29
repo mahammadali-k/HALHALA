@@ -19,7 +19,7 @@ export const uploadsDir = () => path.join(process.env.DATA_DIR || path.join(proc
 const adminProduct = (id: string) => listProducts({ all: true }).find((p) => p.id === id)
 const mustFind = (id: string) => { const p = adminProduct(id); if (!p) throw new ApiError(404, 'not_found'); return p }
 
-/** "Keçi Ferrari" → "keci-ferrari" (Azerbaijani letters transliterated). */
+/** "Kechi Ferrari" → "kechi-ferrari" (Azerbaijani letters transliterated). */
 export function slugify(name: string) {
   const map: Record<string, string> = { ə: 'e', Ə: 'e', ı: 'i', İ: 'i', ö: 'o', Ö: 'o', ü: 'u', Ü: 'u', ş: 's', Ş: 's', ç: 'c', Ç: 'c', ğ: 'g', Ğ: 'g' }
   return name.replace(/[əƏıİöÖüÜşŞçÇğĞ]/g, (c) => map[c]).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'product'
