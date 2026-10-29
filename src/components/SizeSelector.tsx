@@ -32,8 +32,8 @@ export function SizeSelector({ product, value, onChange, invalid }: Props) {
               />
               <span
                 className={`flex h-11 min-w-12 items-center justify-center border px-3 text-sm transition-colors
-                  peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold
-                  ${out ? 'border-line/60 text-muted/40 line-through' : selected ? 'border-gold bg-gold text-ink' : 'border-line hover:border-gold-deep'}`}
+                  peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent
+                  ${out ? 'border-line/60 text-muted/40 line-through' : selected ? 'border-accent bg-accent text-ink' : 'border-line hover:border-accent-deep'}`}
               >
                 {s}
               </span>

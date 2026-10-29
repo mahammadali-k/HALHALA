@@ -22,11 +22,11 @@ export function AddedToast() {
           <m.div
             key={lastAdded.n}
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-            className="pointer-events-auto flex items-center gap-4 border border-gold bg-ink-2 px-5 py-3 text-sm shadow-xl"
+            className="pointer-events-auto flex items-center gap-4 border border-accent bg-ink-2 px-5 py-3 text-sm shadow-xl"
           >
-            <span className="text-gold"><CheckIcon /></span>
+            <span className="text-accent"><CheckIcon /></span>
             <span>{t('toast.added', { name: lastAdded.name, size: lastAdded.size })}</span>
-            <button onClick={() => { setShown(false); open() }} className="text-xs uppercase tracking-widest text-gold underline-offset-4 hover:underline">{t('toast.view')}</button>
+            <button onClick={() => { setShown(false); open() }} className="text-xs uppercase tracking-widest text-accent underline-offset-4 hover:underline">{t('toast.view')}</button>
           </m.div>
         )}
       </AnimatePresence>

@@ -18,7 +18,7 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex justify-between gap-3">
           <div>
-            <Link to={`/product/${product.slug}`} onClick={onNavigate} className="text-sm hover:text-gold-deep">{product.name}</Link>
+            <Link to={`/product/${product.slug}`} onClick={onNavigate} className="text-sm hover:text-accent-deep">{product.name}</Link>
             <p className="text-xs text-muted">{t('cart.sizeLine', { size: item.size, price: formatPrice(product.price) })}</p>
           </div>
           <p className="text-sm tabular-nums">{formatPrice(line.subtotal)}</p>
@@ -27,7 +27,7 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
           <QuantitySelector value={item.quantity} max={line.maxQuantity} label={t('cart.qtyFor', { name: product.name, size: item.size })} onChange={(n) => setQuantity(item.productId, item.size, n)} />
           <button onClick={() => remove(item.productId, item.size)} aria-label={t('cart.removeAria', { name: product.name, size: item.size })} className="text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t('cart.remove')}</button>
         </div>
-        {item.quantity >= line.maxQuantity && <p className="text-xs text-gold">{t('cart.max')}</p>}
+        {item.quantity >= line.maxQuantity && <p className="text-xs text-accent">{t('cart.max')}</p>}
       </div>
     </li>
   )

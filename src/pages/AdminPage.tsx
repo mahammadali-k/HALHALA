@@ -31,7 +31,7 @@ export default function AdminPage() {
       <div role="tablist" className="mt-8 flex flex-wrap gap-1 border-b border-line">
         {TABS.map((k) => (
           <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-            className={`px-4 py-3 text-xs uppercase tracking-[0.2em] transition-colors ${tab === k ? 'border-b-2 border-gold text-fg' : 'text-muted hover:text-fg'}`}>{t(`ad.${k}` as Key)}</button>
+            className={`px-4 py-3 text-xs uppercase tracking-[0.2em] transition-colors ${tab === k ? 'border-b-2 border-accent text-fg' : 'text-muted hover:text-fg'}`}>{t(`ad.${k}` as Key)}</button>
         ))}
       </div>
       <div className="mt-8">
@@ -46,7 +46,7 @@ export default function AdminPage() {
 
 const ExportLink = ({ href }: { href: string }) => {
   const { t } = useI18n()
-  return <a href={href} download className="border border-line px-4 py-2.5 text-xs uppercase tracking-[0.2em] transition-colors hover:border-burgundy hover:bg-burgundy/25">{t('ad.export')}</a>
+  return <a href={href} download className="border border-line px-4 py-2.5 text-xs uppercase tracking-[0.2em] transition-colors hover:border-violet hover:bg-violet/25">{t('ad.export')}</a>
 }
 
 function Stat({ label, value }: { label: string; value: string | number }) {
@@ -69,13 +69,13 @@ function Dashboard() {
         <Stat label={t('ad.stat.users')} value={s.users} />
       </div>
       <section>
-        <h2 className="mb-4 text-xs uppercase tracking-[0.25em] text-gold">{t('ad.stat.byStatus')}</h2>
+        <h2 className="mb-4 text-xs uppercase tracking-[0.25em] text-accent">{t('ad.stat.byStatus')}</h2>
         <ul className="flex flex-wrap gap-3">{STATUSES.map((k) => <li key={k} className="border border-line px-4 py-2 text-sm">{t(`st.${k}` as Key)}: <span className="tabular-nums">{s.byStatus[k]}</span></li>)}</ul>
       </section>
       <section>
-        <h2 className="mb-4 text-xs uppercase tracking-[0.25em] text-gold">{t('ad.stat.low')}</h2>
+        <h2 className="mb-4 text-xs uppercase tracking-[0.25em] text-accent">{t('ad.stat.low')}</h2>
         {s.lowStock.length === 0 ? <p className="text-sm text-muted">{t('ad.lowstock.none')}</p> : (
-          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{s.lowStock.map((l) => <li key={`${l.productId}${l.size}`} className="flex justify-between border border-line px-4 py-2 text-sm"><span>{l.name} · {l.size}</span><span className={l.qty === 0 ? 'text-danger' : 'text-gold'}>{l.qty}</span></li>)}</ul>
+          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{s.lowStock.map((l) => <li key={`${l.productId}${l.size}`} className="flex justify-between border border-line px-4 py-2 text-sm"><span>{l.name} · {l.size}</span><span className={l.qty === 0 ? 'text-danger' : 'text-accent'}>{l.qty}</span></li>)}</ul>
         )}
       </section>
     </div>
@@ -125,7 +125,7 @@ function OrdersTab() {
         {orders?.map((o) => (
           <OrderCard key={o.number} order={o} showContact>
             {NEXT_STATUS[o.status].map((s) => (
-              <Button key={s} variant={s === 'cancelled' ? 'outline' : 'gold'} className="!px-4 !py-2.5" onClick={() => void patch(o.number, { status: s })}>{t(`st.${s}` as Key)}</Button>
+              <Button key={s} variant={s === 'cancelled' ? 'outline' : 'accent'} className="!px-4 !py-2.5" onClick={() => void patch(o.number, { status: s })}>{t(`st.${s}` as Key)}</Button>
             ))}
             {o.status !== 'cancelled' && (
               <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline"
@@ -220,7 +220,7 @@ function CatalogTab() {
   const input = (k: string, current: string, w: string, onSave: () => void, id: string) => (
     <div className="flex">
       <input id={id} type="number" min={0} step={k.startsWith('price') ? '0.01' : '1'} value={draft[k] ?? current} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} className={`field ${w} !py-2`} />
-      {draft[k] !== undefined && <button onClick={onSave} className="border border-l-0 border-line px-2 text-xs text-gold hover:bg-burgundy hover:text-fg">{t('ad.stock.save')}</button>}
+      {draft[k] !== undefined && <button onClick={onSave} className="border border-l-0 border-line px-2 text-xs text-accent hover:bg-violet hover:text-fg">{t('ad.stock.save')}</button>}
       {saved === k && <span className="ml-2 self-center text-xs text-emerald-300">✓ {t('ad.saved')}</span>}
     </div>
   )

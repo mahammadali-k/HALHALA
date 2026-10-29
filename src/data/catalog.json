@@ -1,8 +1,10 @@
 [
-  { "id": "p1", "slug": "mountain-goat-tee", "name": "Mountain Goat Tee", "category": "T-Shirts", "collectionId": "mountain-goat", "price": 55, "bestSeller": true, "createdAt": "2026-09-01", "stock": { "S": 4, "M": 9, "L": 7, "XL": 3, "XXL": 0 } },
-  { "id": "p2", "slug": "high-altitude-tee", "name": "High Altitude Tee", "category": "T-Shirts", "collectionId": "mountain-goat", "price": 55, "bestSeller": true, "createdAt": "2026-09-10", "stock": { "S": 0, "M": 5, "L": 6, "XL": 4, "XXL": 2 } },
-  { "id": "p3", "slug": "halhala-logo-tee", "name": "HALHALA Logo Tee", "category": "T-Shirts", "collectionId": "essentials", "price": 45, "bestSeller": true, "createdAt": "2026-08-15", "stock": { "S": 8, "M": 12, "L": 10, "XL": 6, "XXL": 3 } },
-  { "id": "p4", "slug": "night-ridge-tee", "name": "Night Ridge Tee", "category": "T-Shirts", "collectionId": "limited", "price": 60, "bestSeller": true, "createdAt": "2026-09-20", "stock": { "S": 0, "M": 0, "L": 0, "XL": 0, "XXL": 0 } },
-  { "id": "p5", "slug": "courtyard-tee", "name": "Courtyard Tee", "category": "T-Shirts", "collectionId": "essentials", "price": 50, "createdAt": "2026-10-01", "stock": { "M": 3, "L": 4, "XL": 2 } },
-  { "id": "p6", "slug": "carpet-tee", "name": "Carpet Tee", "category": "T-Shirts", "collectionId": "limited", "price": 60, "createdAt": "2026-10-10", "stock": { "S": 2, "M": 4, "L": 4, "XL": 1 } }
+  { "id": "p1", "slug": "kechi-ferrari", "name": "Kechi Ferrari", "category": "T-Shirts", "collectionId": "limited", "price": 28, "bestSeller": true, "createdAt": "2026-10-01", "stock": { "S": 6, "M": 10, "L": 8, "XL": 4, "XXL": 2 } },
+  { "id": "p2", "slug": "kechi-bmw", "name": "Kechi BMW", "category": "T-Shirts", "collectionId": "limited", "price": 28, "bestSeller": true, "createdAt": "2026-09-28", "stock": { "S": 5, "M": 9, "L": 9, "XL": 3, "XXL": 1 } },
+  { "id": "p3", "slug": "kechi-logo", "name": "Kechi Logo", "category": "T-Shirts", "collectionId": "essentials", "price": 28, "bestSeller": true, "createdAt": "2026-09-20", "stock": { "S": 8, "M": 12, "L": 10, "XL": 6, "XXL": 3 } },
+  { "id": "p4", "slug": "kechi-style", "name": "Kechi Style", "category": "T-Shirts", "collectionId": "mountain-goat", "price": 28, "bestSeller": true, "createdAt": "2026-09-15", "stock": { "S": 4, "M": 7, "L": 7, "XL": 5, "XXL": 2 } },
+  { "id": "p5", "slug": "kechi-mountain", "name": "Kechi Mountain", "category": "T-Shirts", "collectionId": "mountain-goat", "price": 28, "createdAt": "2026-10-10", "stock": { "S": 3, "M": 6, "L": 6, "XL": 3, "XXL": 0 } },
+  { "id": "p6", "slug": "kechi-drive", "name": "Kechi Drive", "category": "T-Shirts", "collectionId": "limited", "price": 28, "createdAt": "2026-10-14", "stock": { "S": 2, "M": 4, "L": 4, "XL": 2, "XXL": 1 } },
+  { "id": "p7", "slug": "kechi-face", "name": "Kechi Face", "category": "T-Shirts", "collectionId": "essentials", "price": 28, "createdAt": "2026-10-18", "stock": { "S": 5, "M": 8, "L": 8, "XL": 4, "XXL": 2 } },
+  { "id": "p8", "slug": "kechi-power", "name": "Kechi Power", "category": "T-Shirts", "collectionId": "mountain-goat", "price": 28, "createdAt": "2026-10-25", "stock": { "S": 4, "M": 7, "L": 6, "XL": 3, "XXL": 1 } }
 ]

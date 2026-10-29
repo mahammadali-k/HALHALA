@@ -6,12 +6,12 @@ import { Button } from './Button'
 interface Props {
   /** Pre-written message that is copied to the clipboard when a channel opens. */
   message: string
-  variant?: 'primary' | 'outline' | 'gold'
+  variant?: 'primary' | 'outline' | 'accent'
   className?: string
 }
 
 /** One button per configured messaging channel. Copies the message, opens the chat, tells the user what to do next. */
-export function ContactActions({ message, variant = 'gold', className = '' }: Props) {
+export function ContactActions({ message, variant = 'accent', className = '' }: Props) {
   const { t } = useI18n()
   const [status, setStatus] = useState<string | null>(null)
   const go = async (c: Channel) => {

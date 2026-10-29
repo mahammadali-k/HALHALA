@@ -66,7 +66,7 @@ export default function OrderPage() {
     <div className="container-x max-w-2xl pt-14">
       <Heading as="h1" eyebrow={order.number} title={t(state === 'cod' ? 'oc.title' : key(`${state}.title`))} reveal={false} />
       <p className="mt-5 text-muted" aria-live="polite">{state === 'cod' ? t('oc.d', { number: order.number, phone: order.phone }) : t(key(`${state}.d`), { number: order.number, phone: order.phone })}</p>
-      {state === 'cod' && <p className="mt-2 text-sm text-gold">{t('pm.cod.d')}</p>}
+      {state === 'cod' && <p className="mt-2 text-sm text-accent">{t('pm.cod.d')}</p>}
       {state === 'failed' && open && order.status === 'new' && (
         <div className="mt-6">
           <Button onClick={() => void payAgain()} disabled={redirecting}>{redirecting ? t('oc.redirecting') : t('oc.payagain')}</Button>
@@ -79,7 +79,7 @@ export default function OrderPage() {
         <ButtonLink to="/shop">{t('oc.shop')}</ButtonLink>
         {user && <ButtonLink to="/account" variant="outline">{t('oc.account')}</ButtonLink>}
       </div>
-      {!user && <p className="mt-6 text-sm text-muted"><Link to="/register" className="text-gold underline-offset-4 hover:text-gold-deep hover:underline">{t('acc.register')}</Link> — {t('acc.register.lead')}</p>}
+      {!user && <p className="mt-6 text-sm text-muted"><Link to="/register" className="text-accent underline-offset-4 hover:text-accent-deep hover:underline">{t('acc.register')}</Link> — {t('acc.register.lead')}</p>}
     </div>
   )
 }

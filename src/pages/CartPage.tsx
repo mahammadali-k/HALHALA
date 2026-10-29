@@ -21,7 +21,7 @@ export default function CartPage() {
         <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_22rem]">
           <ul className="border-t border-line">{lines.map((l) => <CartLineItem key={l.key} line={l} />)}</ul>
           <aside className="h-fit border border-line bg-card p-6" aria-label={t('co.summary')}>
-            <h2 className="text-xs uppercase tracking-[0.25em] text-gold">{t('cart.summary')}</h2>
+            <h2 className="text-xs uppercase tracking-[0.25em] text-accent">{t('cart.summary')}</h2>
             <dl className="mt-5 space-y-3 text-sm">
               <div className="flex justify-between"><dt className="text-muted">{t('cart.items', { n: count })}</dt><dd className="tabular-nums">{formatPrice(total)}</dd></div>
               <div className="flex justify-between"><dt className="text-muted">{t('cart.delivery')}</dt><dd className="text-muted">{t('cart.delivery.v')}</dd></div>

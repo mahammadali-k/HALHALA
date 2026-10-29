@@ -6,12 +6,12 @@ import { useCart } from '../context/CartContext'
 import { useCatalog } from '../context/CatalogContext'
 import { useI18n } from '../i18n'
 import { Drawer } from './Drawer'
-import { LangSwitch } from './LangSwitch'
 import { BagIcon, MenuIcon, SearchIcon, UserIcon } from './icons'
+import { LangSwitch } from './LangSwitch'
 import { DesktopNav, MobileNav } from './NavMenu'
 import { Wordmark } from './Wordmark'
 
-const iconBtn = 'relative p-2 transition-colors hover:text-gold-deep'
+const iconBtn = 'relative p-2 transition-colors hover:text-accent-deep'
 
 export function Header() {
   const { count, open: openCart } = useCart()
@@ -36,13 +36,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:bg-gold focus:px-3 focus:py-2 focus:text-ink">{t('skip')}</a>
-      <div className="container-x flex h-16 items-center gap-6">
-        <button className={`${iconBtn} -ml-2 md:hidden`} aria-label={t('menu.open')} onClick={() => setMenu(true)}><MenuIcon /></button>
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:bg-accent focus:px-3 focus:py-2 focus:text-ink">{t('skip')}</a>
+      <div className="container-x grid h-[4.25rem] grid-cols-[auto_1fr_auto] items-center gap-6">
         <Link to="/" aria-label="HALHALA — home" className="shrink-0"><Wordmark /></Link>
-        <div className="flex flex-1 justify-center"><DesktopNav /></div>
-        <div className="ml-auto flex items-center gap-1 md:ml-0">
-          <LangSwitch className="mr-2 hidden md:flex" />
+        <div className="flex justify-center"><DesktopNav /></div>
+        <div className="flex items-center gap-0.5">
+          <LangSwitch className="mr-2 hidden lg:flex" />
           {backend === 'on' && (
             <Link to={user ? '/account' : '/login'} className={iconBtn} aria-label={user ? `${t('acc.aria')}: ${user.name}` : t('acc.login')}>
               <UserIcon />
@@ -55,10 +54,11 @@ export function Header() {
             <AnimatePresence>
               {count > 0 && (
                 <m.span key={count} initial={{ scale: 1.5 }} animate={{ scale: 1 }}
-                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-burgundy px-1 text-[0.6rem] tabular-nums">{count}</m.span>
+                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-violet px-1 text-[0.6rem] tabular-nums">{count}</m.span>
               )}
             </AnimatePresence>
           </button>
+          <button className={`${iconBtn} md:hidden`} aria-label={t('menu.open')} onClick={() => setMenu(true)}><MenuIcon /></button>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="left" footer={<LangSwitch className="w-fit" />}>
+      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="right" footer={<LangSwitch className="w-fit" />}>
         <MobileNav onNavigate={() => setMenu(false)} />
       </Drawer>
     </header>

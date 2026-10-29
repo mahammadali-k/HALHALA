@@ -56,14 +56,14 @@ function ProductView({ product }: { product: NonNullable<ReturnType<typeof getPr
         <Link to="/shop" className="hover:text-fg">{t('p.breadcrumb')}</Link> / <span className="text-fg">{product.name}</span>
       </nav>
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-        <ProductGallery images={product.images} />
+        <ProductGallery images={product.images} spin={product.spin} />
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="eyebrow">{t(catKey(product.category))}</p>
-          <h1 className="display mt-3 text-5xl md:text-6xl">{product.name}</h1>
+          <h1 className="display mt-3 text-h2">{product.name}</h1>
           <p className="mt-4 text-xl tabular-nums">{formatPrice(product.price)}</p>
           <p className="mt-6 max-w-md leading-relaxed text-muted">{t(prodKey(product.id))}</p>
 
-          <p className={`mt-6 text-sm ${sold ? 'text-danger' : total <= 5 ? 'text-gold' : 'text-muted'}`}>
+          <p className={`mt-6 text-sm ${sold ? 'text-danger' : total <= 5 ? 'text-accent' : 'text-muted'}`}>
             {sold ? t('p.sold') : total <= 5 ? t('p.low', { n: total }) : t('p.in')}
           </p>
 
@@ -73,7 +73,7 @@ function ProductView({ product }: { product: NonNullable<ReturnType<typeof getPr
               <div>
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-muted">{t('p.qty')}</p>
                 <QuantitySelector value={qty} max={Math.max(1, remaining)} onChange={setQty} />
-                {size && remaining <= 0 && <p className="mt-2 text-xs text-gold">{t('p.maxincart')}</p>}
+                {size && remaining <= 0 && <p className="mt-2 text-xs text-accent">{t('p.maxincart')}</p>}
               </div>
               <Button className="w-full sm:w-auto sm:min-w-64" onClick={submit} disabled={!!size && remaining <= 0}>{t('p.add')}</Button>
             </div>
@@ -89,13 +89,13 @@ function ProductView({ product }: { product: NonNullable<ReturnType<typeof getPr
           </div>
           <div className="mt-4 border border-line p-4 text-sm text-muted">
             <p className="text-fg">{t('p.delivery.t')}</p>
-            <p className="mt-1">{t('p.delivery.d', { handle: site.instagramHandle })} <Link to="/info#delivery" className="text-gold underline-offset-4 hover:underline">{t('p.delivery.link')}</Link>.</p>
+            <p className="mt-1">{t('p.delivery.d', { handle: site.instagramHandle })} <Link to="/info#delivery" className="text-accent underline-offset-4 hover:underline">{t('p.delivery.link')}</Link>.</p>
           </div>
         </div>
       </div>
 
       <section className="pt-28" aria-labelledby="rel-h">
-        <Reveal><h2 id="rel-h" className="display mb-10 text-4xl md:text-5xl">{t('p.related')}</h2></Reveal>
+        <Reveal><h2 id="rel-h" className="display mb-10 text-h2">{t('p.related')}</h2></Reveal>
         <ProductGrid products={related(product)} />
       </section>
     </div>

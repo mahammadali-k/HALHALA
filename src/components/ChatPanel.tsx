@@ -114,14 +114,14 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
       <div role="log" aria-live="polite" className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {shown.map((m) => (
           <div key={m.id} className={m.from === 'user' ? 'flex justify-end' : ''}>
-            <div className={`max-w-[88%] whitespace-pre-line px-3.5 py-2.5 text-sm leading-relaxed ${m.from === 'user' ? 'bg-burgundy text-fg' : 'bg-card text-fg'}`}>
+            <div className={`max-w-[88%] whitespace-pre-line px-3.5 py-2.5 text-sm leading-relaxed ${m.from === 'user' ? 'bg-violet text-fg' : 'bg-card text-fg'}`}>
               {m.text || <span className="text-muted" aria-label={t('chat.typing')}>…</span>}
               {m.actions && m.actions.length > 0 && (
                 <div className="mt-3 flex flex-col gap-2">
                   {m.actions.map((a, i) => a.handoff
-                    ? <ContactActions key={`h${i}`} message={handoffMessage(userLines, lang)} variant="gold" />
+                    ? <ContactActions key={`h${i}`} message={handoffMessage(userLines, lang)} variant="accent" />
                     : a.to
-                      ? <Link key={a.to + i} to={a.to} onClick={onClose} className="border border-line px-3 py-2 text-xs uppercase tracking-widest transition-colors hover:border-gold-deep hover:text-gold-deep">{a.label}</Link>
+                      ? <Link key={a.to + i} to={a.to} onClick={onClose} className="border border-line px-3 py-2 text-xs uppercase tracking-widest transition-colors hover:border-accent-deep hover:text-accent-deep">{a.label}</Link>
                       : null)}
                 </div>
               )}
@@ -133,13 +133,13 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
 
       <div className="flex flex-wrap gap-2 border-t border-line px-4 py-3">
         {quickReplies(lang).map((q) => (
-          <button key={q} onClick={() => void ask(q)} disabled={busy} className="border border-line px-2.5 py-1 text-xs text-muted transition-colors hover:border-gold-deep hover:text-gold-deep disabled:opacity-50">{q}</button>
+          <button key={q} onClick={() => void ask(q)} disabled={busy} className="border border-line px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent-deep hover:text-accent-deep disabled:opacity-50">{q}</button>
         ))}
       </div>
       <form onSubmit={submit} className="flex border-t border-line">
         <label htmlFor="chat-input" className="sr-only">{t('chat.your')}</label>
         <input id="chat-input" ref={input} value={text} onChange={(e) => setText(e.target.value)} maxLength={500} placeholder={t('chat.placeholder')} autoComplete="off" className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted/60 focus-visible:bg-card" />
-        <button type="submit" disabled={!text.trim() || busy} className="px-4 text-xs uppercase tracking-widest text-gold transition-colors hover:text-fg disabled:opacity-40">{t('chat.send')}</button>
+        <button type="submit" disabled={!text.trim() || busy} className="px-4 text-xs uppercase tracking-widest text-accent transition-colors hover:text-fg disabled:opacity-40">{t('chat.send')}</button>
       </form>
     </section>
   )

@@ -22,7 +22,7 @@ interface Props { filters: Filters; onChange: (patch: Partial<Filters>) => void;
 function Group({ legend, children }: { legend: string; children: React.ReactNode }) {
   return (
     <fieldset className="border-b border-line pb-6">
-      <legend className="mb-3 text-[0.7rem] uppercase tracking-[0.25em] text-gold">{legend}</legend>
+      <legend className="mb-3 text-[0.7rem] uppercase tracking-[0.25em] text-accent">{legend}</legend>
       <div className="space-y-2">{children}</div>
     </fieldset>
   )
@@ -31,7 +31,7 @@ function Radio({ name, checked, label, onSelect }: { name: string; checked: bool
   return (
     <label className="flex cursor-pointer items-center gap-3 text-sm text-muted has-[:checked]:text-fg hover:text-fg">
       <input type="radio" name={name} checked={checked} onChange={onSelect} className="peer sr-only" />
-      <span className="h-3.5 w-3.5 border border-line peer-checked:border-gold peer-checked:bg-gold peer-focus-visible:outline-2 peer-focus-visible:outline-gold" aria-hidden />
+      <span className="h-3.5 w-3.5 border border-line peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-accent" aria-hidden />
       {label}
     </label>
   )

@@ -13,7 +13,7 @@ export default function About() {
   return (
     <div className="container-x pt-14">
       <Reveal>
-        <Heading as="h1" size="lg" eyebrow={t('about.eyebrow')} reveal={false} title={<>{t('about.t1')} <span className="italic text-gold">{t('about.t2')}</span></>} />
+        <Heading as="h1" size="lg" eyebrow={t('about.eyebrow')} reveal={false} title={<>{t('about.t1')} <span className="italic text-accent">{t('about.t2')}</span></>} />
         <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">{t('about.lead')}</p>
       </Reveal>
       <div className="mt-16 grid gap-4 md:grid-cols-3">
@@ -25,7 +25,7 @@ export default function About() {
         <ul className="mt-10 grid gap-px border border-line bg-line md:grid-cols-3">
           {values.map((n) => (
             <li key={n} className="bg-ink p-8">
-              <h3 className="font-display text-3xl text-gold">{t(`about.v${n}.t` as Key)}</h3>
+              <h3 className="font-display text-3xl text-accent">{t(`about.v${n}.t` as Key)}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">{t(`about.v${n}.d` as Key)}</p>
             </li>
           ))}

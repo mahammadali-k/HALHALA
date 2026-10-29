@@ -12,7 +12,7 @@ const Chevron = ({ open }: { open: boolean }) => (
   </svg>
 )
 
-const topCls = 'text-xs uppercase tracking-[0.22em] transition-colors hover:text-gold-deep'
+const topCls = 'relative pb-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] transition-colors hover:text-accent-deep after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform aria-[current=page]:after:scale-x-100'
 
 function DesktopItem({ item, open, onOpen, onClose }: { item: NavItem; open: boolean; onOpen: () => void; onClose: () => void }) {
   const { t } = useI18n()
@@ -26,9 +26,9 @@ function DesktopItem({ item, open, onOpen, onClose }: { item: NavItem; open: boo
       onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
     >
       <div className="flex items-center gap-1.5 py-5">
-        <NavLink to={item.to} end={item.to === '/'} className={({ isActive }) => `${topCls} ${isActive ? 'text-gold' : ''}`}>{t(item.label)}</NavLink>
+        <NavLink to={item.to} end={item.to === '/'} className={topCls}>{t(item.label)}</NavLink>
         {item.children && (
-          <button type="button" aria-label={t('nav.menuFor', { name: t(item.label) })} aria-expanded={open} aria-haspopup="true" onClick={() => (open ? onClose() : onOpen())} className="p-1 text-muted hover:text-gold-deep">
+          <button type="button" aria-label={t('nav.menuFor', { name: t(item.label) })} aria-expanded={open} aria-haspopup="true" onClick={() => (open ? onClose() : onOpen())} className="p-1 text-muted hover:text-accent-deep">
             <Chevron open={open} />
           </button>
         )}
@@ -87,11 +87,12 @@ export function MobileNav({ onNavigate }: { onNavigate: () => void }) {
   const { t } = useI18n()
   return (
     <nav aria-label="Mobile">
-      <Link to="/" onClick={onNavigate} className="block border-b border-line py-4 font-display text-3xl hover:text-gold-deep">{t('menu.home')}</Link>
-      {nav.map((item) => (
+      {nav.map((item) => !item.children ? (
+        <Link key={item.to} to={item.to} onClick={onNavigate} className="block border-b border-line py-4 font-display text-2xl uppercase hover:text-accent-deep">{t(item.label)}</Link>
+      ) : (
         <details key={item.to} className="group border-b border-line">
-          <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-3xl marker:hidden [&::-webkit-details-marker]:hidden">
-            {t(item.label)}<span className="text-gold text-lg"><Chevron open={false} /></span>
+          <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-2xl uppercase marker:hidden [&::-webkit-details-marker]:hidden">
+            {t(item.label)}<span className="text-accent text-lg"><Chevron open={false} /></span>
           </summary>
           <ul className="pb-4">
             {item.children?.map((c) => (

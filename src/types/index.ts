@@ -31,6 +31,8 @@ export interface Product {
   /** Units in stock per size. 0 / missing = unavailable. */
   stock: Partial<Record<Size, number>>
   bestSeller?: boolean
+  /** Optional turntable frames (ordered, one full revolution) for a true 360° view. Without them a two-face (front/back) spin is used. */
+  spin?: string[]
   createdAt: string
 }
 

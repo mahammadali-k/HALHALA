@@ -55,7 +55,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <Button type="submit" disabled={busy} className="w-full">{t(isLogin ? 'acc.login' : 'acc.register')}</Button>
       </form>
-      <p className="mt-6 text-sm text-muted">{t(isLogin ? 'acc.no' : 'acc.have')} <Link to={other} className="text-gold underline-offset-4 hover:text-gold-deep hover:underline">{t(isLogin ? 'acc.register' : 'acc.login')}</Link></p>
+      <p className="mt-6 text-sm text-muted">{t(isLogin ? 'acc.no' : 'acc.have')} <Link to={other} className="text-accent underline-offset-4 hover:text-accent-deep hover:underline">{t(isLogin ? 'acc.register' : 'acc.login')}</Link></p>
     </div>
   )
 }

@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  /* Softer charcoal-plum palette (lifted from near-black) */
-  --color-ink: #1a171c;
-  --color-ink-2: #221e24;
-  --color-card: #2a252c;
-  --color-burgundy: #6a2542;
-  --color-burgundy-hi: #7d2e4f;
-  --color-gold: #c9ad7b;
-  /* Darker, muted tone used for hover/pressed states (instead of the bright gold) */
-  --color-gold-deep: #8a7148;
-  --color-wine: #4a1a2e;
-  --color-fg: #f4efe9;
-  --color-muted: #bdb7b4;
-  --color-line: #3d363f;
-  --color-danger: #e29a9a;
-  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  /* Violet-on-black palette (HALHALA concept): near-black surfaces, one purple accent */
+  --color-ink: #09070d;
+  --color-ink-2: #100b18;
+  --color-card: #150f20;
+  --color-violet: #5a30b0;       /* primary button fill */
+  --color-violet-hi: #6c42c8;
+  --color-accent: #b48cff;       /* accent text / borders */
+  --color-accent-deep: #8a5fe0;  /* hover & pressed states (darker than accent) */
+  --color-fg: #f4f1f8;
+  --color-muted: #a69fb4;
+  --color-line: #281f38;
+  --color-danger: #f08a9a;
+  --font-display: "Syne", "Inter", ui-sans-serif, sans-serif;
+  --font-brand: "Pirata One", "Syne", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -27,8 +27,8 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  :focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
-  ::selection { background: var(--color-burgundy); color: var(--color-fg); }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  ::selection { background: var(--color-violet); color: var(--color-fg); }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -37,21 +37,38 @@
 
 @layer components {
   .container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
-  .eyebrow { @apply text-[0.7rem] font-medium uppercase tracking-[0.28em] text-gold; }
-  .display { @apply font-display font-medium leading-[0.95] tracking-tight; }
+  .eyebrow { @apply font-mono text-[0.68rem] font-medium uppercase tracking-[0.3em] text-accent; }
+  /* [ bracketed mono label ] */
+  .tag { @apply font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted; }
+  .display { @apply font-display font-extrabold uppercase leading-[0.98] tracking-tight [overflow-wrap:break-word] [hyphens:auto]; }
+  /* fluid heading sizes — the wide display face must fit 360px screens in every language */
+  .text-h1 { font-size: clamp(1.55rem, 7.2vw, 4.5rem); }
+  .text-h2 { font-size: clamp(1.45rem, 6.4vw, 3.5rem); }
   .field {
     @apply w-full border border-line bg-ink-2 px-4 py-3 text-sm text-fg placeholder:text-muted/60
-      transition-colors hover:border-muted/50 focus:border-gold;
+      transition-colors hover:border-muted/50 focus:border-accent;
   }
   .field[aria-invalid="true"] { @apply border-danger; }
 }
 
 /* Mountain contour pattern (inline SVG, no request) */
 .topo {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='700' fill='none' stroke='%23a04068' stroke-opacity='.35'%3E%3Cpath d='M-20 520C120 430 210 560 340 470s190-210 330-150 190 140 260 80'/%3E%3Cpath d='M-20 470C110 380 220 500 340 420s200-190 330-130 200 130 260 70'/%3E%3Cpath d='M-20 420C100 330 230 440 340 370s210-170 330-110 210 120 260 60'/%3E%3Cpath d='M-20 370C90 280 240 380 340 320s220-150 330-90 220 110 260 50'/%3E%3Cpath d='M-20 320C80 230 250 320 340 270s230-130 330-70 230 100 260 40'/%3E%3Cpath d='M-20 270C70 180 260 260 340 220s240-110 330-50 240 90 260 30'/%3E%3Cpath d='M-20 600C140 520 200 640 340 560s180-230 330-170 200 150 260 90'/%3E%3Cpath d='M-20 220C60 140 270 200 340 170s250-90 330-30 250 80 260 20'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='700' fill='none' stroke='%237c4fe0' stroke-opacity='.22'%3E%3Cpath d='M-20 520C120 430 210 560 340 470s190-210 330-150 190 140 260 80'/%3E%3Cpath d='M-20 470C110 380 220 500 340 420s200-190 330-130 200 130 260 70'/%3E%3Cpath d='M-20 420C100 330 230 440 340 370s210-170 330-110 210 120 260 60'/%3E%3Cpath d='M-20 370C90 280 240 380 340 320s220-150 330-90 220 110 260 50'/%3E%3Cpath d='M-20 320C80 230 250 320 340 270s230-130 330-70 230 100 260 40'/%3E%3Cpath d='M-20 270C70 180 260 260 340 220s240-110 330-50 240 90 260 30'/%3E%3Cpath d='M-20 600C140 520 200 640 340 560s180-230 330-170 200 150 260 90'/%3E%3Cpath d='M-20 220C60 140 270 200 340 170s250-90 330-30 250 80 260 20'/%3E%3C/svg%3E");
   background-size: 900px 700px;
 }
 
 /* Slow 3D idle sway (transform only → compositor-friendly) */
 @keyframes sway { 0%,100% { transform: rotateY(-4deg) rotateX(1deg); } 50% { transform: rotateY(4deg) rotateX(-1deg); } }
 .sway { animation: sway 9s ease-in-out infinite; }
+
+/* Chamfered (cut-corner) frames — FRZN-style. Wrap content: .chamfer-frame > .chamfer-in */
+.chamfer-frame, .chamfer-in {
+  --cut: 18px;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+}
+.chamfer-frame { padding: 1px; background: var(--color-line); transition: background-color .25s; }
+.chamfer-frame:hover, .chamfer-frame:focus-within { background: var(--color-accent-deep); }
+.chamfer-in { background: var(--color-ink-2); height: 100%; }
+
+/* Purple stage glow behind hero / viewer */
+.glow { background: radial-gradient(60% 55% at 70% 45%, rgba(124, 79, 224, .35), transparent 70%); }

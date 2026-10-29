@@ -4,7 +4,7 @@ import type { Order } from '../lib/api'
 import { formatPrice } from '../lib/format'
 
 const badge: Record<Order['status'], string> = {
-  new: 'border-gold/60 text-gold', confirmed: 'border-burgundy-hi text-fg', shipped: 'border-muted text-fg',
+  new: 'border-accent/60 text-accent', confirmed: 'border-violet-hi text-fg', shipped: 'border-muted text-fg',
   delivered: 'border-emerald-500/60 text-emerald-300', cancelled: 'border-line text-muted line-through',
 }
 

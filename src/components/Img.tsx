@@ -36,7 +36,7 @@ export function Img({ image, ratio = 'aspect-[4/5]', className = '', eager, size
         <div
           role="img"
           aria-label={image.alt}
-          className="absolute inset-0 flex items-end bg-[radial-gradient(120%_90%_at_30%_10%,#3a1a2c_0%,#221e24_55%,#1a171c_100%)] p-3"
+          className="absolute inset-0 flex items-end bg-[radial-gradient(120%_90%_at_30%_10%,#2a1650_0%,#100b18_55%,#09070d_100%)] p-3"
         >
           <span className="text-[0.6rem] uppercase tracking-[0.2em] text-muted/60">{image.label}</span>
         </div>

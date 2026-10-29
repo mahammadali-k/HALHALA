@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ContactActions } from '../components/ContactActions'
 import { Faq } from '../components/Faq'
-import { Heading, goldLink } from '../components/ui'
+import { Heading, accentLink } from '../components/ui'
 import { site } from '../data/site'
 import { useI18n } from '../i18n'
 import { dmChannels } from '../lib/contact'
@@ -11,7 +11,7 @@ function Policy({ id, title, text, topic }: { id: string; title: string; text: s
   const { t } = useI18n()
   return (
     <section id={id} className="mt-12 scroll-mt-24">
-      <h2 className="font-display text-3xl text-gold">{title}</h2>
+      <h2 className="font-display text-3xl text-accent">{title}</h2>
       {text ? <p className="mt-4 text-muted">{text}</p> : (
         <div className="mt-4 border border-line bg-card p-5 text-sm text-muted">
           <p>{t('info.missing', { title })}</p>
@@ -29,7 +29,7 @@ export function InfoPage() {
       <Heading as="h1" size="lg" title={t('info.title')} reveal={false} />
       <Policy id="delivery" title={t('info.delivery')} text={site.deliveryPolicy} topic={t('info.topic.delivery')} />
       <Policy id="returns" title={t('info.returns')} text={site.returnsPolicy} topic={t('info.topic.returns')} />
-      <p className="mt-12 text-sm text-muted">{t('info.more')} <Link to="/contact#faq" className={goldLink}>{t('info.faq')}</Link></p>
+      <p className="mt-12 text-sm text-muted">{t('info.more')} <Link to="/contact#faq" className={accentLink}>{t('info.faq')}</Link></p>
     </div>
   )
 }
@@ -62,12 +62,12 @@ export function ContactPage() {
           </div>
           {ready
             ? <><p className="text-xs uppercase tracking-widest text-muted">{t('ct.sendwith')}</p><ContactActions message={message} /></>
-            : <button type="submit" className="text-xs uppercase tracking-widest text-gold">{t('ct.choose')}</button>}
+            : <button type="submit" className="text-xs uppercase tracking-widest text-accent">{t('ct.choose')}</button>}
         </form>
 
         <div>
           <dl className="border-t border-line">
-            {dmChannels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={goldLink} href={c.id === 'instagram' ? site.instagramUrl : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${site.instagramHandle}` : t('ct.open')}</a></dd></div>)}
+            {dmChannels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={accentLink} href={c.id === 'instagram' ? site.instagramUrl : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${site.instagramHandle}` : t('ct.open')}</a></dd></div>)}
             {site.email && <div className={row}><dt className="text-muted">{t('ct.email')}</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>}
             {site.phone && <div className={row}><dt className="text-muted">{t('ct.phone')}</dt><dd><a href={`tel:${site.phone}`}>{site.phone}</a></dd></div>}
             {site.address && <div className={row}><dt className="text-muted">{t('ct.address')}</dt><dd>{site.address}</dd></div>}

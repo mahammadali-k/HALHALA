@@ -20,7 +20,7 @@ export function CollectionGrid() {
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <h3 className="font-display text-3xl">{t(colKey(c.id, 'title'))}</h3>
                   <p className="mt-1 text-sm text-muted">{t(colKey(c.id, 'blurb'))}</p>
-                  <span className="mt-4 inline-block border-b border-gold pb-0.5 text-xs uppercase tracking-[0.2em] text-gold">{t('cols.explore')}</span>
+                  <span className="mt-4 inline-block border-b border-accent pb-0.5 text-xs uppercase tracking-[0.2em] text-accent">{t('cols.explore')}</span>
                 </div>
               </Link>
             </Reveal>

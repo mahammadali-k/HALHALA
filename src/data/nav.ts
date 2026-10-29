@@ -7,6 +7,7 @@ export interface NavItem { label: Key; to: string; children?: NavLinkItem[]; /**
 
 /** Single source of truth for header, mobile menu and footer navigation (labels are dictionary keys). */
 export const nav: NavItem[] = [
+  { label: 'menu.home', to: '/' },
   {
     label: 'nav.shop', to: '/shop', feature: 'mountain-goat',
     children: [

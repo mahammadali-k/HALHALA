@@ -19,7 +19,7 @@ export function Faq() {
         <details key={n} className="group py-5">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-base marker:hidden [&::-webkit-details-marker]:hidden">
             {t(`faq.${n}.q` as Key)}
-            <span aria-hidden className="text-gold transition-transform group-open:rotate-45">+</span>
+            <span aria-hidden className="text-accent transition-transform group-open:rotate-45">+</span>
           </summary>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{answer(n)}</p>
         </details>

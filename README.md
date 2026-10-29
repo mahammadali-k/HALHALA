@@ -43,3 +43,8 @@ Before pushing, make sure everything is tracked: `git add -A && git status` (all
 - **Admin `/admin`** — dashboard, orders (search, status flow, mark paid, CSV), users (search, roles, CSV), catalog (prices + stock).
 - **Chat** — streams answers from Claude using the real catalogue; order status is looked up by the website itself (order number + phone). Without an API key a built-in assistant answers.
 - **Languages** — Azerbaijani, Russian, English (`src/i18n`).
+
+## 360° product view
+Product pages open with a slow (≈30 s per turn) rotating viewer: drag, arrow keys or the ‹ › buttons turn it, ❚❚ pauses it, and it stays still for visitors who prefer reduced motion.
+- Without turntable images it spins a two-face card (front photo ⇄ back photo = `images[0]` and `images[1]`).
+- For a true 360°, add `spin` to the product (`src/data/products.ts`): an ordered list of frame URLs for one full revolution (e.g. 36 or 72 images rendered/photographed on a turntable, `/images/p1/01.webp … 36.webp`). The viewer then steps through the frames at the same slow speed.

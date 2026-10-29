@@ -52,7 +52,7 @@ export default function Checkout() {
   if (lines.length === 0 && !message) {
     return (
       <div className="container-x py-32 text-center">
-        <h1 className="display text-5xl">{t('co.empty.t')}</h1>
+        <h1 className="display text-h2">{t('co.empty.t')}</h1>
         <p className="mt-3 text-muted">{t('co.empty.d')}</p>
         <ButtonLink to="/shop" variant="outline" className="mt-8">{t('cart.continue')}</ButtonLink>
       </div>
@@ -112,10 +112,10 @@ export default function Checkout() {
         <div role="note" className="mt-8 border border-line bg-card p-4 text-sm text-muted">
           <p className="text-fg">{t('co.on.t')}</p>
           <p className="mt-1">{t('co.on.d')}</p>
-          {!user && <p className="mt-2"><Link to="/login?next=/checkout" className="text-gold underline-offset-4 hover:text-gold-deep hover:underline">{t('acc.guest')}</Link></p>}
+          {!user && <p className="mt-2"><Link to="/login?next=/checkout" className="text-accent underline-offset-4 hover:text-accent-deep hover:underline">{t('acc.guest')}</Link></p>}
         </div>
       ) : (
-        <div role="note" className="mt-8 border border-gold/60 bg-card p-4 text-sm text-muted">
+        <div role="note" className="mt-8 border border-accent/60 bg-card p-4 text-sm text-muted">
           <p className="text-fg">{t('co.note.t')}</p>
           <p className="mt-1">{t('co.note.d')}</p>
         </div>
@@ -135,23 +135,23 @@ export default function Checkout() {
           </section>
         ) : (
           <form onSubmit={(e) => void submit(e)} noValidate className="space-y-6" aria-label={t('co.form')}>
-            <h2 className="text-xs uppercase tracking-[0.25em] text-gold">{t('co.contact')}</h2>
+            <h2 className="text-xs uppercase tracking-[0.25em] text-accent">{t('co.contact')}</h2>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field {...field('name', 'co.name')}><input {...props('name')} autoComplete="name" /></Field>
               <Field {...field('phone', 'co.phone')}><input {...props('phone')} type="tel" inputMode="tel" autoComplete="tel" /></Field>
             </div>
             <Field {...field('email', 'co.email', true)}><input {...props('email')} type="email" autoComplete="email" /></Field>
-            <h2 className="pt-4 text-xs uppercase tracking-[0.25em] text-gold">{t('co.address.h')}</h2>
+            <h2 className="pt-4 text-xs uppercase tracking-[0.25em] text-accent">{t('co.address.h')}</h2>
             <Field {...field('city', 'co.city')}><input {...props('city')} autoComplete="address-level2" /></Field>
             <Field {...field('address', 'co.address')}><input {...props('address')} autoComplete="street-address" /></Field>
             <Field {...field('notes', 'co.notes', true)}><textarea {...props('notes')} rows={3} /></Field>
 
             {online && (
               <fieldset className="space-y-3">
-                <legend className="mb-3 text-xs uppercase tracking-[0.25em] text-gold">{t('co.pay')}</legend>
+                <legend className="mb-3 text-xs uppercase tracking-[0.25em] text-accent">{t('co.pay')}</legend>
                 {payments.map((m) => (
-                  <label key={m} className="flex cursor-pointer items-start gap-3 border border-line p-4 has-[:checked]:border-gold-deep has-[:checked]:bg-card">
-                    <input type="radio" name="pay" value={m} checked={method === m} onChange={() => setMethod(m)} className="mt-1 accent-[#8a7148]" />
+                  <label key={m} className="flex cursor-pointer items-start gap-3 border border-line p-4 has-[:checked]:border-accent-deep has-[:checked]:bg-card">
+                    <input type="radio" name="pay" value={m} checked={method === m} onChange={() => setMethod(m)} className="mt-1 accent-[#8a5fe0]" />
                     <span><span className="block text-sm">{t(`pm.${m}` as Key)}</span><span className="block text-xs text-muted">{t(`pm.${m}.d` as Key)}</span></span>
                   </label>
                 ))}
@@ -170,7 +170,7 @@ export default function Checkout() {
         )}
 
         <aside className="h-fit border border-line bg-card p-6" aria-label={t('co.summary')}>
-          <h2 className="text-xs uppercase tracking-[0.25em] text-gold">{t('co.summary')}</h2>
+          <h2 className="text-xs uppercase tracking-[0.25em] text-accent">{t('co.summary')}</h2>
           <ul className="mt-5 divide-y divide-line">
             {lines.map((l) => (
               <li key={l.key} className="flex justify-between gap-3 py-3 text-sm">

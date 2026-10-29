@@ -8,7 +8,7 @@ export function LangSwitch({ className = '' }: { className?: string }) {
       {LANGS.map((l) => (
         <button
           key={l.id} type="button" lang={l.id} title={l.name} aria-pressed={lang === l.id} onClick={() => setLang(l.id)}
-          className={`px-2.5 py-1.5 transition-colors ${lang === l.id ? 'bg-gold text-ink' : 'text-muted hover:text-fg'}`}
+          className={`px-2.5 py-1.5 transition-colors ${lang === l.id ? 'bg-accent text-ink' : 'text-muted hover:text-fg'}`}
         >{l.label}</button>
       ))}
     </div>
