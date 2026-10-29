@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
-import { site } from '@/data/site'
+import { useCatalog } from '@/context/CatalogContext'
+import { instagramDm } from '@/lib/store'
 import { useI18n, type Key } from '@/i18n'
 import { openChat } from '@/lib/contact'
 import { Button } from '@/components/ui/Button'
@@ -14,16 +15,17 @@ const cell = 'group flex flex-col gap-1 bg-ink-2 p-6 transition-colors hover:bg-
 /** Four quick entry points directly under the hero. */
 export function FeatureStrip() {
   const { t } = useI18n()
+  const { store } = useCatalog()
   const body = (k: 'dm' | 'chat' | 'stock' | 'delivery') => (
     <>
       <span className="eyebrow">{t(`feat.${k}.t` as Key)}</span>
-      <span className="text-sm text-muted">{t(`feat.${k}.d` as Key, { handle: site.instagramHandle })}</span>
+      <span className="text-sm text-muted">{t(`feat.${k}.d` as Key, { handle: store.instagramHandle })}</span>
     </>
   )
   return (
     <section aria-label={t('feat.label')} className="container-x pt-6">
       <ul className="grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-        <li><a href={site.dmUrl} target="_blank" rel="noreferrer" className={cell}>{body('dm')}</a></li>
+        <li><a href={instagramDm(store)} target="_blank" rel="noreferrer" className={cell}>{body('dm')}</a></li>
         <li><button onClick={openChat} className={`${cell} w-full text-left`}>{body('chat')}</button></li>
         <li><Link href="/shop?stock=1" className={cell}>{body('stock')}</Link></li>
         <li><Link href="/info" className={cell}>{body('delivery')}</Link></li>

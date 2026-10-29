@@ -24,7 +24,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
   const { count, total } = useCart()
   const { t, lang } = useI18n()
   const { user } = useAuth()
-  const { products, config } = useCatalog()
+  const { products, config, store, channels } = useCatalog()
   const [msgs, setMsgs] = useState<Msg[]>(load)
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -48,7 +48,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
   const push = (m: Omit<Msg, 'id'>) => { const id = nextId.current++; setMsgs((x) => [...x, { ...m, id }]); return id }
   const patch = (id: number, p: Partial<Msg>) => setMsgs((x) => x.map((m) => (m.id === id ? { ...m, ...p } : m)))
 
-  const offline = (q: string) => { const r = reply(q, { count, total, payments: config.payments, products }, lang); push({ from: 'bot', text: r.text, actions: r.actions }) }
+  const offline = (q: string) => { const r = reply(q, { count, total, payments: config.payments, products, store, channels }, lang); push({ from: 'bot', text: r.text, actions: r.actions }) }
 
   /** Order status is answered by the website itself (never by the AI): number + the phone used, or the logged-in account. */
   const trackOrder = async (text: string): Promise<boolean> => {
@@ -84,7 +84,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
     abort.current = new AbortController()
     try {
       await streamChat({
-        messages: history, lang, context: buildContext(lang, { count, total }, products, config.payments), signal: abort.current.signal,
+        messages: history, lang, context: buildContext(lang, { count, total }, products, config.payments, store), signal: abort.current.signal,
         onDelta: (d) => { raw += d; patch(id, { text: parseActions(raw).text }) },
       })
       const { text: finalText, actions } = parseActions(raw)
@@ -115,7 +115,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
       <div role="log" aria-live="polite" className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {shown.map((m) => (
           <div key={m.id} className={m.from === 'user' ? 'flex justify-end' : ''}>
-            <div className={`max-w-[88%] whitespace-pre-line px-3.5 py-2.5 text-sm leading-relaxed ${m.from === 'user' ? 'bg-violet text-fg' : 'bg-card text-fg'}`}>
+            <div className={`max-w-[88%] whitespace-pre-line px-3.5 py-2.5 text-sm leading-relaxed ${m.from === 'user' ? 'bg-violet text-on-violet' : 'bg-card text-fg'}`}>
               {m.text || <span className="text-muted" aria-label={t('chat.typing')}>…</span>}
               {m.actions && m.actions.length > 0 && (
                 <div className="mt-3 flex flex-col gap-2">

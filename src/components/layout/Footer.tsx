@@ -3,9 +3,10 @@ import Link from 'next/link'
 import { MountainBackdrop } from '@/components/ui/MountainBackdrop'
 import { mutedLink } from '@/components/ui/styles'
 import { shopLinks } from '@/data/nav'
+import { useCatalog } from '@/context/CatalogContext'
 import { site } from '@/data/site'
 import { useI18n } from '@/i18n'
-import { dmChannels } from '@/lib/contact'
+import { instagramUrl } from '@/lib/store'
 import { Wordmark } from './Wordmark'
 
 function Column({ title, children }: { title: string; children: React.ReactNode }) {
@@ -50,6 +51,7 @@ function Perks() {
 
 export function Footer() {
   const { t } = useI18n()
+  const { store, channels } = useCatalog()
   return (
     <footer className="mt-24 border-t border-line">
       <div className="relative isolate overflow-hidden border-b border-line">
@@ -58,7 +60,7 @@ export function Footer() {
           <Wordmark className="!text-5xl text-accent" />
           <div>
             <p className="font-mono text-[0.78rem] font-medium uppercase tracking-[0.22em]">{t('footer.slogan')}</p>
-            <p className="tag mt-3">{t('tag.est', { year: site.est })}</p>
+            <p className="tag mt-3">{store.est ? t('tag.est', { year: store.est }) : ''}</p>
           </div>
           <Perks />
         </div>
@@ -71,16 +73,18 @@ export function Footer() {
           <li><Link className={mutedLink} href="/info#returns">{t('footer.returns')}</Link></li>
           <li><Link className={mutedLink} href="/contact#faq">{t('footer.faq')}</Link></li>
           <li><Link className={mutedLink} href="/cart">{t('footer.cart')}</Link></li>
+          <li><Link className={mutedLink} href="/privacy">{t('footer.privacy')}</Link></li>
+          <li><Link className={mutedLink} href="/terms">{t('footer.terms')}</Link></li>
         </Column>
         <Column title={t('footer.contact')}>
-          {dmChannels.map((c) => <li key={c.id}><a className={mutedLink} href={c.url} target="_blank" rel="noreferrer">{t('footer.dm', { channel: c.label })}</a></li>)}
-          {site.email && <li><a className={mutedLink} href={`mailto:${site.email}`}>{site.email}</a></li>}
-          {site.phone && <li><a className={mutedLink} href={`tel:${site.phone}`}>{site.phone}</a></li>}
-          {site.address && <li className={mutedLink}>{site.address}</li>}
+          {channels.map((c) => <li key={c.id}><a className={mutedLink} href={c.url} target="_blank" rel="noreferrer">{t('footer.dm', { channel: c.label })}</a></li>)}
+          {store.email && <li><a className={mutedLink} href={`mailto:${store.email}`}>{store.email}</a></li>}
+          {store.phone && <li><a className={mutedLink} href={`tel:${store.phone}`}>{store.phone}</a></li>}
+          {store.address && <li className={mutedLink}>{store.address}</li>}
         </Column>
         <Column title={t('footer.follow')}>
-          <li><a className={mutedLink} href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram · @{site.instagramHandle}</a></li>
-          {site.tiktokUrl && <li><a className={mutedLink} href={site.tiktokUrl} target="_blank" rel="noreferrer">TikTok</a></li>}
+          <li><a className={mutedLink} href={instagramUrl(store)} target="_blank" rel="noreferrer">Instagram · @{store.instagramHandle}</a></li>
+          {store.tiktokUrl && <li><a className={mutedLink} href={store.tiktokUrl} target="_blank" rel="noreferrer">TikTok</a></li>}
         </Column>
       </div>
       <div className="border-t border-line py-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted">{t('footer.rights', { year: YEAR, name: site.name })}</div>

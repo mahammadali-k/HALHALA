@@ -3,10 +3,11 @@ import Link from 'next/link'
 import { ContactActions } from '@/components/ContactActions'
 import { Heading } from '@/components/ui/Heading'
 import { accentLink } from '@/components/ui/styles'
-import { site } from '@/data/site'
+import { useCatalog } from '@/context/CatalogContext'
+import { policyText } from '@/lib/store'
 import { useI18n } from '@/i18n'
 
-function Policy({ id, title, text, topic }: { id: string; title: string; text: string | null; topic: string }) {
+export function Policy({ id, title, text, topic }: { id: string; title: string; text: string; topic: string }) {
   const { t } = useI18n()
   return (
     <section id={id} className="mt-12 scroll-mt-24">
@@ -22,12 +23,13 @@ function Policy({ id, title, text, topic }: { id: string; title: string; text: s
 }
 
 export function InfoView() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
+  const { store } = useCatalog()
   return (
     <div className="container-x max-w-3xl pt-14">
       <Heading as="h1" size="lg" title={t('info.title')} reveal={false} />
-      <Policy id="delivery" title={t('info.delivery')} text={site.deliveryPolicy} topic={t('info.topic.delivery')} />
-      <Policy id="returns" title={t('info.returns')} text={site.returnsPolicy} topic={t('info.topic.returns')} />
+      <Policy id="delivery" title={t('info.delivery')} text={policyText(store, 'delivery', lang)} topic={t('info.topic.delivery')} />
+      <Policy id="returns" title={t('info.returns')} text={policyText(store, 'returns', lang)} topic={t('info.topic.returns')} />
       <p className="mt-12 text-sm text-muted">{t('info.more')} <Link href="/contact#faq" className={accentLink}>{t('info.faq')}</Link></p>
     </div>
   )

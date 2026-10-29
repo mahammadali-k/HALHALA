@@ -1,26 +1,26 @@
-import { site } from '@/data/site'
-import { makeT, prodKey, type Lang } from '@/i18n'
+import type { Lang } from '@/i18n'
+import { instagramUrl, policyText } from '@/lib/store'
+import type { StoreSettings } from '@/types/api'
 import type { Product } from '@/types'
-import { sizesOf, stockFor } from '@/lib/catalog'
+import { describe, sizesOf, stockFor } from '@/lib/catalog'
 
 export interface ApiMessage { role: 'user' | 'assistant'; content: string }
 
 /** Everything the AI is allowed to know — built from the same data the shop renders. */
-export function buildContext(lang: Lang, cart: { count: number; total: number }, products: Product[], payments: string[]) {
-  const t = makeT(lang)
+export function buildContext(lang: Lang, cart: { count: number; total: number }, products: Product[], payments: string[], store: StoreSettings) {
   return {
     catalogue: products.map((p) => {
       const sizes = sizesOf(p)
       return {
-        name: p.name, url: `/product/${p.slug}`, priceAZN: p.price, category: p.category, description: t(prodKey(p.id)), bestSeller: Boolean(p.bestSeller),
+        name: p.name, url: `/product/${p.slug}`, priceAZN: p.price, category: p.category, description: describe(p, lang), bestSeller: Boolean(p.bestSeller),
         sizesInStock: sizes.filter((s) => stockFor(p, s) > 0), soldOutSizes: sizes.filter((s) => stockFor(p, s) === 0),
       }
     }),
     cart: { items: cart.count, totalAZN: cart.total },
     shop: { online: true, payments },
     brand: {
-      instagram: site.instagramUrl, tiktok: site.tiktokUrl, email: site.email, phone: site.phone, address: site.address,
-      deliveryPolicy: site.deliveryPolicy, returnsPolicy: site.returnsPolicy,
+      instagram: instagramUrl(store), tiktok: store.tiktokUrl, email: store.email, phone: store.phone, address: store.address,
+      deliveryPolicy: policyText(store, 'delivery', lang) || null, returnsPolicy: policyText(store, 'returns', lang) || null,
     },
   }
 }

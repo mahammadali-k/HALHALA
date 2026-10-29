@@ -4,14 +4,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Heading } from '@/components/ui/Heading'
 import { Drawer } from '@/components/ui/Drawer'
-import { FilterPanel, categories, priceBuckets, type Filters } from '@/features/shop/FilterPanel'
+import { FilterPanel, priceBuckets, type Filters } from '@/features/shop/FilterPanel'
 import { FilterIcon } from '@/components/ui/icons'
 import { ProductGrid } from '@/features/shop/ProductGrid'
-import { collections } from '@/data/products'
 import { useCatalog } from '@/context/CatalogContext'
-import { useI18n, prodKey, type Key } from '@/i18n'
-import { isSoldOut } from '@/lib/catalog'
-import type { Product } from '@/types'
+import { useI18n, type Key } from '@/i18n'
+import { describe, isSoldOut } from '@/lib/catalog'
+import { CATEGORIES, type Product } from '@/types'
 
 type Sort = 'featured' | 'newest' | 'price-asc' | 'price-desc'
 const sorts: { id: Sort; label: Key }[] = [
@@ -20,7 +19,7 @@ const sorts: { id: Sort; label: Key }[] = [
 ]
 
 export function ShopView() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const { products } = useCatalog()
   const params = useSearchParams()
   const router = useRouter()
@@ -30,8 +29,7 @@ export function ShopView() {
   const q = params.get('q') ?? ''
   const sort = (sorts.find((s) => s.id === params.get('sort'))?.id ?? 'featured') as Sort
   const filters: Filters = {
-    category: categories.find((c) => c === params.get('category')) ?? '',
-    collection: collections.find((c) => c.id === params.get('collection'))?.id ?? '',
+    category: CATEGORIES.find((c) => c === params.get('category')) ?? '',
     price: priceBuckets.find((b) => b.id === params.get('price'))?.id ?? '',
     inStock: params.get('stock') === '1',
   }
@@ -48,7 +46,6 @@ export function ShopView() {
   const onFilter = (p: Partial<Filters>) =>
     update({
       ...('category' in p && { category: p.category || null }),
-      ...('collection' in p && { collection: p.collection || null }),
       ...('price' in p && { price: p.price || null }),
       ...('inStock' in p && { stock: p.inStock ? '1' : null }),
     })
@@ -59,10 +56,9 @@ export function ShopView() {
     const needle = q.trim().toLowerCase()
     const out = products.filter((p) =>
       (!filters.category || p.category === filters.category) &&
-      (!filters.collection || p.collectionId === filters.collection) &&
       (!bucket || bucket.test(p.price)) &&
       (!filters.inStock || !isSoldOut(p)) &&
-      (!needle || `${p.name} ${p.category} ${t(prodKey(p.id))}`.toLowerCase().includes(needle)))
+      (!needle || `${p.name} ${p.category} ${describe(p, lang)}`.toLowerCase().includes(needle)))
     const by: Record<Sort, (a: Product, b: Product) => number> = {
       featured: (a, b) => Number(!!b.bestSeller) - Number(!!a.bestSeller),
       newest: (a, b) => b.createdAt.localeCompare(a.createdAt),
@@ -71,7 +67,7 @@ export function ShopView() {
     }
     return [...out].sort(by[sort])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, sort, filters.category, filters.collection, filters.price, filters.inStock, t, products])
+  }, [q, sort, filters.category, filters.price, filters.inStock, t, lang, products])
 
   return (
     <div className="container-x pt-14">

@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { Img } from '@/components/ui/Img'
 import { nav, type NavItem } from '@/data/nav'
-import { collections } from '@/data/products'
-import { colKey, useI18n } from '@/i18n'
+import { useI18n } from '@/i18n'
 
 const Chevron = ({ open }: { open: boolean }) => (
   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden className={`transition-transform ${open ? 'rotate-180' : ''}`}>
@@ -21,7 +20,7 @@ const topCls = 'relative pb-1 font-mono text-[0.68rem] font-semibold uppercase t
 
 function DesktopItem({ item, active, open, onOpen, onClose }: { item: NavItem; active: boolean; open: boolean; onOpen: () => void; onClose: () => void }) {
   const { t } = useI18n()
-  const feature = collections.find((c) => c.id === item.feature)
+  const feature = item.feature
   return (
     <li
       className="relative"
@@ -56,9 +55,9 @@ function DesktopItem({ item, active, open, onOpen, onClose }: { item: NavItem; a
                 ))}
               </ul>
               {feature && (
-                <Link href={`/shop?collection=${feature.id}`} onClick={onClose} className="relative m-3 ml-0 block overflow-hidden">
+                <Link href={feature.href} onClick={onClose} className="relative m-3 ml-0 block overflow-hidden">
                   <Img image={feature.image} ratio="h-full min-h-44" sizes="176px" />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent p-3 font-mono text-xs uppercase tracking-widest">{t(colKey(feature.id, 'title'))}</span>
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent p-3 font-mono text-xs uppercase tracking-widest">{t(feature.label)}</span>
                 </Link>
               )}
             </div>

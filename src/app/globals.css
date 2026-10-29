@@ -21,10 +21,28 @@
   --color-muted: #a69fb4;
   --color-line: #281f38;
   --color-danger: #f08a9a;
+  --color-on-violet: #ffffff;    /* text on violet fills — the same in both themes */
+}
+
+:root { --mb-far: #3b1f7a; --mb-near: #24124d; --mb-fog: #7c4fe0; }
+
+/* Morning (light) theme: same tokens, re-pointed. Chosen via the `theme` cookie → <html data-theme>. */
+:root[data-theme='light'] {
+  --color-ink: #f7f4fb;
+  --color-ink-2: #ede8f5;
+  --color-card: #ffffff;
+  --color-accent: #5a30b0;
+  --color-accent-deep: #3d1f8c;
+  --color-fg: #17111f;
+  --color-muted: #5d5470;
+  --color-line: #d8cfe7;
+  --color-danger: #c0324c;
+  --mb-far: #cdbdf0; --mb-near: #b7a2e6; --mb-fog: #9b7be8;
 }
 
 @layer base {
   html { background: var(--color-ink); color-scheme: dark; scroll-behavior: smooth; }
+  html[data-theme='light'] { color-scheme: light; }
   body {
     background: var(--color-ink);
     color: var(--color-fg);
@@ -54,6 +72,11 @@
   }
   .field[aria-invalid="true"] { @apply border-danger; }
 }
+
+/* theme toggle icon: sun in night mode (→ go light), moon in morning mode (→ go dark) */
+.theme-icon-light { display: none; }
+:root[data-theme='light'] .theme-icon-light { display: block; }
+:root[data-theme='light'] .theme-icon-dark { display: none; }
 
 /* Mountain contour pattern (inline SVG, no request) */
 .topo {

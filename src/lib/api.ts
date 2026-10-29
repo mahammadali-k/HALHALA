@@ -1,4 +1,4 @@
-import type { Config } from '@/types/api'
+import type { StoreSettings } from '@/types/api'
 
 /** Error from the HALHALA API (`code` is the server's error id, mapped to text by lib/errors.ts). */
 export class ApiError extends Error {
@@ -13,14 +13,15 @@ export class ApiError extends Error {
   }
 }
 
-/** JSON fetch wrapper: cookie session + the CSRF header the server requires. */
+/** JSON fetch wrapper: cookie session + the CSRF header the server requires (a FormData body is sent as multipart). */
 export async function api<T>(path: string, opts: { method?: string; body?: unknown } = {}): Promise<T> {
+  const isForm = typeof FormData !== 'undefined' && opts.body instanceof FormData
   let r: Response
   try {
     r = await fetch(path, {
       method: opts.method ?? 'GET', credentials: 'same-origin',
-      headers: { 'X-Requested-With': 'halhala', ...(opts.body !== undefined ? { 'Content-Type': 'application/json' } : {}) },
-      body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+      headers: { 'X-Requested-With': 'halhala', ...(opts.body !== undefined && !isForm ? { 'Content-Type': 'application/json' } : {}) },
+      body: opts.body === undefined ? undefined : isForm ? (opts.body as FormData) : JSON.stringify(opts.body),
     })
   } catch { throw new ApiError(0, 'offline') }
   if (!(r.headers.get('content-type') ?? '').includes('json')) throw new ApiError(0, 'offline')
@@ -29,5 +30,5 @@ export async function api<T>(path: string, opts: { method?: string; body?: unkno
   return data as T
 }
 
-export const deliveryFeeFor = (cfg: Config, subtotal: number) =>
+export const deliveryFeeFor = (cfg: Pick<StoreSettings, 'deliveryFee' | 'freeDeliveryFrom'>, subtotal: number) =>
   cfg.deliveryFee <= 0 || (cfg.freeDeliveryFrom !== null && subtotal >= cfg.freeDeliveryFrom) ? 0 : cfg.deliveryFee

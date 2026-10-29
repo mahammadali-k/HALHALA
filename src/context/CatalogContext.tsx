@@ -1,34 +1,39 @@
 'use client'
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
-import { products as baseProducts } from '@/data/products'
 import { api } from '@/lib/api'
+import { channelsOf, type Channel } from '@/lib/store'
 import type { Product } from '@/types'
-import type { Config, LiveCatalog } from '@/types/api'
+import type { Config, LiveCatalog, StoreSettings } from '@/types/api'
 
 interface Ctx {
-  /** Static catalogue merged with the server's live stock and admin price overrides. Always use these, never data/products directly. */
+  /** Active products with live stock and prices (rendered on the server, refreshed after orders / admin changes). */
   products: Product[]
+  /** Admin-editable store settings: contacts, social links, delivery fee, policy texts. */
+  store: StoreSettings
+  /** Instagram (+ TikTok when set) message channels derived from the store settings. */
+  channels: Channel[]
   config: Config
   getProduct: (id: string) => Product | undefined
   getBySlug: (slug: string) => Product | undefined
-  /** Apply live stock/prices returned by any API response. */
-  applyCatalog: (c: Partial<LiveCatalog>) => void
+  /** Apply the catalogue snapshot returned by any API response. */
+  applyCatalog: (c: LiveCatalog) => void
+  applyStore: (s: StoreSettings) => void
   refresh: () => Promise<void>
 }
 const C = createContext<Ctx | null>(null)
 
-/** Server-rendered initial state → no loading flash; later updates come from order / admin API responses. */
-export function CatalogProvider({ initial, config, children }: { initial: LiveCatalog; config: Config; children: ReactNode }) {
-  const [live, setLive] = useState(initial)
-  const applyCatalog = useCallback((c: Partial<LiveCatalog>) => setLive((cur) => ({ stock: c.stock ?? cur.stock, prices: c.prices ?? cur.prices })), [])
-  const refresh = useCallback(async () => { try { setLive(await api<LiveCatalog>('/api/stock')) } catch { /* keep last known state */ } }, [])
+/** Server-rendered initial state → no loading flash. */
+export function CatalogProvider({ initial, initialStore, config, children }: { initial: LiveCatalog; initialStore: StoreSettings; config: Config; children: ReactNode }) {
+  const [products, setProducts] = useState(initial.products)
+  const [store, setStore] = useState(initialStore)
+  const applyCatalog = useCallback((c: LiveCatalog) => setProducts(c.products), [])
+  const refresh = useCallback(async () => { try { setProducts((await api<LiveCatalog>('/api/products')).products) } catch { /* keep last known state */ } }, [])
 
-  const products = useMemo(() => baseProducts.map((p) => ({ ...p, price: live.prices[p.id] ?? p.price, stock: live.stock[p.id] ?? p.stock })), [live])
-  const value = useMemo(() => ({
-    products, config, applyCatalog, refresh,
-    getProduct: (id: string) => products.find((p) => p.id === id),
-    getBySlug: (slug: string) => products.find((p) => p.slug === slug),
-  }), [products, config, applyCatalog, refresh])
+  const value = useMemo<Ctx>(() => ({
+    products, store, config, applyCatalog, applyStore: setStore, refresh, channels: channelsOf(store),
+    getProduct: (id) => products.find((p) => p.id === id),
+    getBySlug: (slug) => products.find((p) => p.slug === slug),
+  }), [products, store, config, applyCatalog, refresh])
   return <C.Provider value={value}>{children}</C.Provider>
 }
 

@@ -1,11 +1,14 @@
 import 'server-only'
 import type { NextRequest } from 'next/server'
 import { clean } from '@/lib/validate'
-import type { Size } from '@/types'
 import { NEXT_STATUS, ORDER_STATUSES, PAYMENT_STATUSES, type Order, type OrderStatus, type Stats, type UserRow } from '@/types/api'
-import { requireAdmin } from './auth'
-import { baseById, toAzn, toQepik } from './catalog'
-import { many, one, run, tx, type OrderDbRow } from './db'
+import { randomBytes } from 'node:crypto'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { hashPassword, requireAdmin } from './auth'
+import { listProducts, toAzn } from './catalog'
+import { db, many, one, run, tx, type OrderDbRow } from './db'
 import { ApiError, readJson } from './http'
 import { loadOrder, orderById, orderByNumber, setOrderStatus } from './orders'
 
@@ -53,9 +56,14 @@ export function stats(req: NextRequest): Stats {
     revenuePaid: toAzn(n("SELECT COALESCE(SUM(total),0) n FROM orders WHERE payment_status = 'paid' AND status != 'cancelled'")),
     revenueExpected: toAzn(n("SELECT COALESCE(SUM(total),0) n FROM orders WHERE payment_status != 'paid' AND status NOT IN ('cancelled','delivered')")),
     users: n('SELECT COUNT(*) n FROM users'),
-    lowStock: many<{ productId: string; size: string; qty: number }>('SELECT product_id AS productId, size, qty FROM stock WHERE qty <= 2 ORDER BY qty, product_id')
-      .map((r) => ({ ...r, name: baseById.get(r.productId)?.name ?? r.productId })),
+    lowStock: lowStock(),
   }
+}
+
+/** Sizes of active products with ≤ 2 units left. */
+function lowStock(): Stats['lowStock'] {
+  return listProducts().flatMap((p) => Object.entries(p.stock).filter(([, q]) => (q ?? 0) <= 2).map(([size, qty]) => ({ productId: p.id, name: p.name, size, qty: qty ?? 0 })))
+    .sort((a, b) => a.qty - b.qty || a.name.localeCompare(b.name))
 }
 
 export async function patchOrder(req: NextRequest, number: string) {
@@ -77,18 +85,25 @@ export async function patchOrder(req: NextRequest, number: string) {
   return loadOrder(orderById(row.id))
 }
 
-export async function setStock(req: NextRequest) {
+/** Sets a random one-time password for a user and signs them out everywhere. Returns it once for the admin to pass on. */
+export async function resetUserPassword(req: NextRequest, id: number) {
   requireAdmin(req)
-  const b = await readJson(req)
-  const qty = Number(b.qty), p = baseById.get(String(b.productId))
-  if (!p || !(String(b.size) in p.stock) || !Number.isInteger(qty) || qty < 0 || qty > 100000) throw new ApiError(400, 'invalid_input')
-  run('UPDATE stock SET qty = ? WHERE product_id = ? AND size = ?', qty, p.id, b.size as Size)
+  if (!one('SELECT 1 FROM users WHERE id = ?', id)) throw new ApiError(404, 'not_found')
+  const temp = randomBytes(9).toString('base64url')
+  run('UPDATE users SET password_hash = ? WHERE id = ?', await hashPassword(temp), id)
+  run('DELETE FROM sessions WHERE user_id = ?', id)
+  return temp
 }
 
-export async function setPrice(req: NextRequest) {
+/** Consistent snapshot of the SQLite database (VACUUM INTO) as a download. */
+export async function createBackup(req: NextRequest) {
   requireAdmin(req)
-  const b = await readJson(req)
-  const price = Number(b.price), p = baseById.get(String(b.productId))
-  if (!p || !Number.isFinite(price) || price <= 0 || price > 100000) throw new ApiError(400, 'invalid_input')
-  run('INSERT INTO price_overrides (product_id, price_q) VALUES (?, ?) ON CONFLICT(product_id) DO UPDATE SET price_q = excluded.price_q', p.id, toQepik(price))
+  const dir = await mkdtemp(path.join(tmpdir(), 'halhala-backup-'))
+  const file = path.join(dir, 'halhala.db')
+  try {
+    db().exec(`VACUUM INTO '${file.replace(/'/g, "''")}'`)
+    const body = await readFile(file)
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')
+    return new Response(body, { headers: { 'Content-Type': 'application/octet-stream', 'Content-Disposition': `attachment; filename="halhala-${stamp}.db"`, 'Cache-Control': 'no-store' } })
+  } finally { await rm(dir, { recursive: true, force: true }) }
 }

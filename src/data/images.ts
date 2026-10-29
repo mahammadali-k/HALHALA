@@ -23,11 +23,6 @@ export const images = {
     photo('laundry-close', 'Close portrait wearing the goat tee', 'center 35%'),
     photo('bench-zoom', 'Model seated on a bench with a radial zoom effect', 'center 40%'),
   ],
-  collections: {
-    mountain: photo('bench-glasses', 'Mountain Goat collection — model on a bench with tinted glasses', 'center 25%'),
-    essentials: photo('laundry-full', 'Essentials collection — full-length look in black', 'center 40%'),
-    limited: photo('wall-glasses-cam', 'Limited collection — sunlit wall portrait', 'center 30%'),
-  },
   social: [
     photo('laundry-cam', 'HALHALA lookbook — courtyard portrait'),
     photo('wall-glasses-high', 'HALHALA lookbook — sunlit wall'),
@@ -37,7 +32,3 @@ export const images = {
     photo('wall-glasses-cam', 'HALHALA lookbook — glasses, looking up', 'center 30%'),
   ],
 }
-
-/** Gallery for a product from lookbook photo names. */
-export const gallery = (name: string, shots: [PhotoName, string][]): ImageAsset[] =>
-  shots.map(([n, label], i) => photo(n, `${name} — ${label}`, i === 1 ? 'center 35%' : 'center 38%'))

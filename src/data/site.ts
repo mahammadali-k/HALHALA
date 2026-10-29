@@ -1,24 +1,26 @@
-/**
- * Brand/contact facts. Only values seen on the brand's Instagram profile are filled in.
- * Anything `null` is unknown — the UI hides it rather than inventing it. Fill these in when confirmed.
- */
+import type { StoreSettings } from '@/types/api'
+
+/** Static brand constants (never edited at runtime). */
 export const site = {
   name: 'HALHALA',
   tagline: 'The mountain goat is up high',
-  instagramHandle: 'halhala.az',
-  instagramUrl: 'https://www.instagram.com/halhala.az/',
-  /** Orders are currently taken via Instagram DM ("Shop via DM" in the bio). */
-  dmUrl: 'https://ig.me/m/halhala.az',
-  /** Brand TikTok profile (provided by the owner). Set to null to hide every TikTok button. */
-  tiktokUrl: 'https://www.tiktok.com/@halhala.az' as string | null,
-  // TODO(owner): confirm and fill in. Left null on purpose — not invented.
-  email: null as string | null,
-  phone: null as string | null,
-  address: null as string | null,
-  // TODO(owner): official policy text. The Instagram profile has a "Delivery" highlight; no terms are published here.
-  deliveryPolicy: null as string | null,
-  returnsPolicy: null as string | null,
   currency: 'AZN',
-  /** Shown as "[ EST. 2024 ]" in the header and footer — taken from the design brief; confirm or change. */
+} as const
+
+const none = { az: '', ru: '', en: '' }
+
+/**
+ * DEFAULTS of the store settings. The live values are edited in the admin panel (Settings tab) and stored in the
+ * database; anything the admin has not filled in falls back to these. Empty text = "not published yet" in the UI.
+ */
+export const DEFAULT_STORE: StoreSettings = {
+  email: '',
+  phone: '',
+  address: '',
+  instagramHandle: 'halhala.az',
+  tiktokUrl: 'https://www.tiktok.com/@halhala.az',
   est: '2024',
+  deliveryFee: Number(process.env.DELIVERY_FEE_AZN) || 0,
+  freeDeliveryFrom: process.env.FREE_DELIVERY_FROM_AZN ? Number(process.env.FREE_DELIVERY_FROM_AZN) : null,
+  policies: { delivery: { ...none }, returns: { ...none }, privacy: { ...none }, terms: { ...none } },
 }

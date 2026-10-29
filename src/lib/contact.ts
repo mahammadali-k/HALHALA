@@ -1,14 +1,5 @@
-import { site } from '@/data/site'
 import type { TFn } from '@/i18n'
-
-export type ChannelId = 'instagram' | 'tiktok'
-export interface Channel { id: ChannelId; label: string; url: string }
-
-/** Messaging channels that are actually configured (TikTok appears only while its URL is set in data/site.ts). */
-export const dmChannels: Channel[] = [
-  { id: 'instagram', label: 'Instagram', url: site.dmUrl },
-  ...(site.tiktokUrl ? [{ id: 'tiktok' as const, label: 'TikTok', url: site.tiktokUrl }] : []),
-]
+import type { Channel } from './store'
 
 /**
  * Neither platform lets a website pre-fill a DM, so: copy the prepared message to the clipboard

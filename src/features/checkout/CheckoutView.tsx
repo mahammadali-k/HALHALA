@@ -22,7 +22,7 @@ export function CheckoutView() {
   const { lines, total, clear } = useCart()
   const { t, lang } = useI18n()
   const { user } = useAuth()
-  const { config, applyCatalog, refresh } = useCatalog()
+  const { config, store, applyCatalog, refresh } = useCatalog()
   const router = useRouter()
   const [v, setV] = useState(empty)
   const [errors, setErrors] = useState<CheckoutErrors>({})
@@ -47,8 +47,8 @@ export function CheckoutView() {
     )
   }
 
-  const fee = deliveryFeeFor(config, total)
-  const showFee = config.deliveryFee > 0
+  const fee = deliveryFeeFor(store, total)
+  const showFee = store.deliveryFee > 0
 
   /** A text input bound to one contact field. */
   const text = (k: keyof CheckoutContact, label: Key, props: React.InputHTMLAttributes<HTMLInputElement> = {}, optional = false) => (

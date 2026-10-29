@@ -26,7 +26,7 @@ src/
   context/             Catalog (live stock/prices), Cart (localStorage), Auth (server-provided user)
   server/              server-only code: db, http helpers (route wrapper, CSRF, rate limit, CSV), auth, orders, admin, payments (Epoint), chat (Claude), notify (Telegram)
   i18n/                en/az/ru dictionaries (typed keys), core (pure), provider (client), server (cookie → language)
-  data/                catalog.json (prices, initial stock), products.ts, images.ts, nav.ts, site.ts (contacts, TikTok, est. year)
+  data/                images.ts, nav.ts, site.ts (brand name + defaults for the admin-editable store settings)
   lib/                 client/shared helpers: api fetch wrapper, validate (shared by browser + API), catalog, assistant (offline chat), chatApi
   types/               shared types (index.ts = catalogue, api.ts = API payloads)
   instrumentation.ts   starts the unpaid-card-order sweeper once per server
@@ -44,16 +44,17 @@ Conventions: import with `@/…`; UI text only through `t('key')` (all 3 languag
 | Live AI chat | `ANTHROPIC_API_KEY` (optional `CHAT_MODEL`) |
 | Delivery pricing | `DELIVERY_FEE_AZN`, `FREE_DELIVERY_FROM_AZN` |
 | Contacts, TikTok, policies | `src/data/site.ts` |
-| Products / prices / stock | `src/data/catalog.json` (prices and stock are then editable live in `/admin → Catalog`) |
+| Products / prices / stock / photos | Database — managed in `/admin → Products` (first start seeds 6 sample products from `src/server/seed.ts`; check their prices and stock) |
+| Contacts, social links, delivery fee, delivery/returns/privacy/terms texts | `/admin → Settings` (stored in the database) |
 
 ## How it works
 - **Server-rendered state:** the root layout reads the visitor's language (cookie / `Accept-Language`), session and live stock, and hands them to the client providers — no loading flashes, correct `<html lang>` and SEO metadata.
 - **Accounts:** email + password (scrypt), HttpOnly SameSite=Lax session cookie, rate limits, CSRF header + origin check on every state-changing request.
 - **Orders:** the server recomputes prices, checks and reserves stock atomically, stores the order and alerts you on Telegram. Pay on delivery or by card.
 - **Card payments:** Epoint contract per its developer docs. Callback is signature- and amount-verified; if it never arrives the server asks Epoint for the status. Unpaid card orders release their stock after `CARD_HOLD_MINUTES` (30).
-- **Admin:** dashboard, orders (search, status flow, mark paid, CSV), users (search, roles, CSV), catalog (prices + stock).
+- **Admin:** dashboard, orders (search, status flow, mark paid, CSV), users (search, roles, CSV), products (create/edit, sizes + stock, photo upload with automatic resizing, hide/delete), settings (contacts, delivery fee, policies in AZ/RU/EN), password reset for customers, database backup download.
 - **Chat:** streams Claude answers using the real catalogue; order status is looked up by the website itself (order number + phone). Without an API key a built-in assistant answers.
-- **360° viewer:** product pages open with a slow (≈30 s/turn) rotating view — drag, arrows, pause; reduced-motion safe. Without turntable frames it spins front ⇄ back photo; for a true 360° add `spin: [...frame urls]` to the product in `src/data/products.ts`.
+- **360° viewer:** product pages open with a slow (≈30 s/turn) rotating view — drag, arrows, pause; reduced-motion safe. Without turntable frames it spins front ⇄ back photo; for a true 360° the first photo is the front and the second the back.
 - **Images:** `next/image` with a custom loader that serves the pre-generated WebP set; `npm run images -- <folder-with-originals>` regenerates it.
 
 ## Deploy
@@ -61,3 +62,8 @@ The app needs a **Node server with a persistent disk** (SQLite). Use a container
 - **Render:** New → Blueprint → this repo (`render.yaml`). Set the secrets; `PUBLIC_URL` = the service URL.
 - **Fly.io:** see `fly.toml`.  **Any VPS:** `docker build -t halhala . && docker run -p 3000:3000 -v halhala-data:/data --env-file .env halhala`.
 - Vercel/Netlify (serverless, no persistent disk) are not suitable unless the database is moved to a hosted one.
+
+## Production notes
+- **Persistent disk:** `DATA_DIR` (Docker: `/data`) holds the SQLite database **and** uploaded product photos (`uploads/`). Mount it as a volume and back it up; `/admin → Settings → Download backup` exports the database only.
+- Set `ADMIN_EMAILS`, `PUBLIC_URL`, Telegram and Epoint variables (see `.env.example`); Epoint Result URL is `<PUBLIC_URL>/api/payments/epoint/callback`.
+- Privacy policy and terms are written by the brand in the admin panel; until then the pages say they are not published.

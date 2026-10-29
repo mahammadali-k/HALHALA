@@ -65,6 +65,36 @@ export const photoMeta = {
     "width": 4672,
     "height": 7008,
     "blur": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAAAwBACdASoQABgAPu1iqU2ppaOiMAgBMB2JQBOgA3JveKNs/VeAClqUrIAA/lp2FXjqYqyswfaC5AIwZMLVK7G8t6Vr1/zeZ7hZ/tMbb/DpGALDEz7MKFaOieDZvV9sW3TW1KKBxmuGVb/Az5vRhnJdernDig/2lTXcmLU6ctd8P6idBYl1kdgwuaCqckDBP8PFwYDQaRODj0UGD1UThAAA"
+  },
+  "tee-bmw": {
+    "width": 1149,
+    "height": 1369,
+    "blur": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAQCdASoMAA4ABABoJaQAAud+ussg9AAA/vLILdJmcWfHAa5njdi9+XDRNZFMsAAAAA=="
+  },
+  "tee-ferrari": {
+    "width": 1149,
+    "height": 1369,
+    "blur": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoMAA4ABABoJYwAAudSTHbQAP7yyC3RKXY60rSO9wCBtp1onq54wUFOsAA="
+  },
+  "tee-bmw-classic": {
+    "width": 1254,
+    "height": 1254,
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoMAAwABABoJaQAAuySJgglHAAA/m0SgIduAqHZusHGzUT1wogJqPVW18odoNVCtzlMDHa5cl8yyPdcP2fROngTpt2Gs9If3+DlgiQzIq/wAAAA"
+  },
+  "tee-mercedes": {
+    "width": 1149,
+    "height": 1369,
+    "blur": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoMAA4ABABoJaQAAudfS0dAAAD+8sgt0PqFan7F/Yl/jzYh/kwvxQDxxmNOnAAA"
+  },
+  "hoodie-bmw": {
+    "width": 1254,
+    "height": 1254,
+    "blur": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAADQAQCdASoMAAwABABoJaQAAl3NPf4OsAD+5QbYbCqSxeUg+cjdcxZXzFI86d70POWB4M4zIAA="
+  },
+  "hoodie-ferrari": {
+    "width": 1254,
+    "height": 1254,
+    "blur": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACwAQCdASoMAAwABABoJZQAAltjkd4AAP7uyMutZD6jcEdUcQmHS+XZJkYIrq7cIijvc3lAAAA="
   }
 } as const
 export type PhotoName = keyof typeof photoMeta

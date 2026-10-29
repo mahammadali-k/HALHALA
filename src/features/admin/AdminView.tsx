@@ -5,16 +5,17 @@ import { OrderCard, orderDate } from '@/components/OrderCard'
 import { Heading } from '@/components/ui/Heading'
 import { useAuth } from '@/context/AuthContext'
 import { useCatalog } from '@/context/CatalogContext'
+import { ProductsTab } from './ProductsTab'
+import { SettingsTab } from './SettingsTab'
 import { useI18n, type Key } from '@/i18n'
 import { api } from '@/lib/api'
 import { NEXT_STATUS, type LiveCatalog, type Order, type OrderStatus, type PaymentStatus, type Stats, type UserRow } from '@/types/api'
 import { errorText } from '@/lib/errors'
 import { formatPrice } from '@/lib/format'
-import type { Size } from '@/types'
 
 const STATUSES: OrderStatus[] = ['new', 'confirmed', 'shipped', 'delivered', 'cancelled']
-type Tab = 'dashboard' | 'orders' | 'users' | 'catalog'
-const TABS: Tab[] = ['dashboard', 'orders', 'users', 'catalog']
+type Tab = 'dashboard' | 'orders' | 'products' | 'users' | 'settings'
+const TABS: Tab[] = ['dashboard', 'orders', 'products', 'users', 'settings']
 
 /** Admin panel. The server page guarantees an admin session; this is only the interactive UI. */
 export function AdminView() {
@@ -36,7 +37,8 @@ export function AdminView() {
         {tab === 'dashboard' && <Dashboard />}
         {tab === 'orders' && <OrdersTab />}
         {tab === 'users' && <UsersTab selfId={user.id} />}
-        {tab === 'catalog' && <CatalogTab />}
+        {tab === 'products' && <ProductsTab />}
+        {tab === 'settings' && <SettingsTab />}
       </div>
     </div>
   )
@@ -151,6 +153,12 @@ function UsersTab({ selfId }: { selfId: number }) {
     return () => window.clearTimeout(h)
   }, [search, t])
 
+  const [temp, setTemp] = useState<{ id: number; pw: string } | null>(null)
+  const resetPw = async (id: number) => {
+    if (!window.confirm(t('ad.users.resetConfirm'))) return
+    setError(null)
+    try { setTemp({ id, pw: (await api<{ temporaryPassword: string }>(`/api/admin/users/${id}/password`, { method: 'POST', body: {} })).temporaryPassword }) } catch (e) { setError(errorText(t, e)) }
+  }
   const setRole = async (id: number, role: 'admin' | 'customer') => {
     setError(null)
     try { await api(`/api/admin/users/${id}`, { method: 'PATCH', body: { role } }); setUsers((u) => u?.map((x) => (x.id === id ? { ...x, role } : x)) ?? u) } catch (e) { setError(errorText(t, e)) }
@@ -179,6 +187,8 @@ function UsersTab({ selfId }: { selfId: number }) {
                 <td className="py-3 pr-4 text-muted">{orderDate(u.createdAt, lang)}</td>
                 <td className="py-3">
                   <span className="mr-3">{t(`ad.role.${u.role}` as Key)}</span>
+                  {u.id !== selfId && <button onClick={() => void resetPw(u.id)} className="mr-3 text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t('ad.users.reset')}</button>}
+                  {temp?.id === u.id && <span className="mr-3 select-all border border-accent px-2 py-1 font-mono text-xs">{temp.pw}</span>}
                   {u.id !== selfId && <button onClick={() => void setRole(u.id, u.role === 'admin' ? 'customer' : 'admin')} className="text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t(u.role === 'admin' ? 'ad.users.makeCustomer' : 'ad.users.makeAdmin')}</button>}
                 </td>
               </tr>
@@ -187,56 +197,6 @@ function UsersTab({ selfId }: { selfId: number }) {
         </table>
         {users === null && <p className="mt-4 text-muted">{t('acc.loading')}</p>}
         {users?.length === 0 && <p className="mt-4 text-muted">—</p>}
-      </div>
-    </div>
-  )
-}
-
-function CatalogTab() {
-  const { t } = useI18n()
-  const { products, applyCatalog } = useCatalog()
-  const [draft, setDraft] = useState<Record<string, string>>({})
-  const [saved, setSaved] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  const save = async (kind: 'stock' | 'price', productId: string, size?: Size) => {
-    const k = `${kind}|${productId}|${size ?? ''}`
-    setError(null); setSaved(null)
-    try {
-      const body = kind === 'stock' ? { productId, size, qty: Number(draft[k]) } : { productId, price: Number(draft[k]) }
-      const r = await api<LiveCatalog>(`/api/admin/${kind}`, { method: 'PATCH', body })
-      applyCatalog(r)
-      setDraft((d) => { const n = { ...d }; delete n[k]; return n })
-      setSaved(k)
-    } catch (e) { setError(errorText(t, e)) }
-  }
-
-  const input = (k: string, current: string, w: string, onSave: () => void, id: string) => (
-    <div className="flex">
-      <input id={id} type="number" min={0} step={k.startsWith('price') ? '0.01' : '1'} value={draft[k] ?? current} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} className={`field ${w} !py-2`} />
-      {draft[k] !== undefined && <button onClick={onSave} className="border border-l-0 border-line px-2 text-xs text-accent hover:bg-violet hover:text-fg">{t('ad.stock.save')}</button>}
-      {saved === k && <span className="ml-2 self-center text-xs text-emerald-300">✓ {t('ad.saved')}</span>}
-    </div>
-  )
-  return (
-    <div>
-      <p className="mb-6 text-sm text-muted">{t('ad.catalog.hint')}</p>
-      {error && <p role="alert" className="mb-4 text-sm text-danger">{error}</p>}
-      <div className="space-y-4">
-        {products.map((p) => (
-          <div key={p.id} className="grid gap-4 border border-line bg-card p-4 md:grid-cols-[14rem_9rem_1fr] md:items-start">
-            <div><p className="text-sm">{p.name}</p><p className="text-xs text-muted">{p.slug}</p></div>
-            <div><label htmlFor={`pr-${p.id}`} className="mb-1 block text-xs text-muted">{t('ad.price')}</label>{input(`price|${p.id}|`, String(p.price), '!w-24', () => void save('price', p.id), `pr-${p.id}`)}</div>
-            <div>
-              <p className="mb-1 text-xs text-muted">{t('ad.stock')}</p>
-              <div className="flex flex-wrap gap-3">
-                {(Object.keys(p.stock) as Size[]).map((s) => (
-                  <div key={s}><label htmlFor={`st-${p.id}-${s}`} className="mb-1 block text-xs text-muted">{s}</label>{input(`stock|${p.id}|${s}`, String(p.stock[s] ?? 0), '!w-20', () => void save('stock', p.id, s), `st-${p.id}-${s}`)}</div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   )

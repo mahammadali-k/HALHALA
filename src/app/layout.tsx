@@ -7,6 +7,8 @@ import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { getSessionUser } from '@/server/auth'
 import { liveCatalog, publicConfig } from '@/server/catalog'
+import { getStore } from '@/server/settings'
+import { cookies } from 'next/headers'
 import { getLang, getT } from '@/i18n/server'
 import { Providers } from './providers'
 import './globals.css'
@@ -34,11 +36,12 @@ export const viewport: Viewport = { themeColor: '#09070d', width: 'device-width'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Everything the client needs to render correctly on the very first paint.
-  const [lang, user] = await Promise.all([getLang(), getSessionUser()])
+  const [lang, user, jar] = await Promise.all([getLang(), getSessionUser(), cookies()])
+  const theme = jar.get('theme')?.value === 'light' ? 'light' : 'dark'
   return (
-    <html lang={lang} className={`${inter.variable} ${montserrat.variable} ${jetbrains.variable} ${pirata.variable}`}>
+    <html lang={lang} data-theme={theme} className={`${inter.variable} ${montserrat.variable} ${jetbrains.variable} ${pirata.variable}`}>
       <body>
-        <Providers lang={lang} user={user} live={liveCatalog()} config={publicConfig()}>
+        <Providers lang={lang} user={user} live={liveCatalog()} store={getStore()} config={publicConfig()}>
           <Header />
           <main id="main" tabIndex={-1} className="outline-none">{children}</main>
           <Footer />

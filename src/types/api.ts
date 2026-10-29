@@ -1,12 +1,25 @@
-import type { Size } from '@/types'
+import type { LangId, Product } from '@/types'
 
 /** Shapes exchanged between the API (src/server, src/app/api) and the browser. One definition, used by both sides. */
-export type StockMap = Record<string, Partial<Record<Size, number>>>
-export type PriceMap = Record<string, number>
-/** Live catalogue state (stock + admin price overrides). */
-export interface LiveCatalog { stock: StockMap; prices: PriceMap }
+/** Live catalogue snapshot (products with current stock and prices). Returned by every endpoint that changes stock. */
+export interface LiveCatalog { products: Product[] }
 
-export interface Config { payments: string[]; currency: string; deliveryFee: number; freeDeliveryFrom: number | null }
+export interface Config { payments: string[]; currency: string }
+
+export type PolicyKind = 'delivery' | 'returns' | 'privacy' | 'terms'
+export const POLICY_KINDS: PolicyKind[] = ['delivery', 'returns', 'privacy', 'terms']
+/** Store-wide settings, editable in the admin panel (all public — never put secrets here). */
+export interface StoreSettings {
+  email: string; phone: string; address: string
+  /** Instagram handle without @ — DM and profile links are derived from it. */
+  instagramHandle: string
+  tiktokUrl: string
+  /** Founding year shown as "Est. 2024". */
+  est: string
+  deliveryFee: number
+  freeDeliveryFrom: number | null
+  policies: Record<PolicyKind, Record<LangId, string>>
+}
 
 export type Role = 'customer' | 'admin'
 export interface User { id: number; email: string; name: string; phone: string; city: string; address: string; role: Role }

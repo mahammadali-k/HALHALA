@@ -10,9 +10,8 @@ import { ContactActions } from '@/components/ContactActions'
 import { SizeSelector } from '@/features/product/SizeSelector'
 import { useCart } from '@/context/CartContext'
 import { useCatalog } from '@/context/CatalogContext'
-import { site } from '@/data/site'
-import { catKey, prodKey, useI18n, type Key } from '@/i18n'
-import { isSoldOut, related, stockFor, totalStock } from '@/lib/catalog'
+import { catKey, useI18n, type Key } from '@/i18n'
+import { describe, isSoldOut, related, stockFor, totalStock } from '@/lib/catalog'
 import { productInquiry } from '@/lib/contact'
 import { formatPrice } from '@/lib/format'
 import type { Product, Size } from '@/types'
@@ -29,8 +28,8 @@ export function ProductView({ slug }: { slug: string }) {
 
 function ProductDetails({ product }: { product: Product }) {
   const { add, lines } = useCart()
-  const { products } = useCatalog()
-  const { t } = useI18n()
+  const { products, store } = useCatalog()
+  const { t, lang } = useI18n()
   const [size, setSize] = useState<Size | null>(() => {
     const sizes = Object.keys(product.stock) as Size[]
     return sizes.length === 1 && stockFor(product, sizes[0]) > 0 ? sizes[0] : null
@@ -61,7 +60,7 @@ function ProductDetails({ product }: { product: Product }) {
           <p className="eyebrow">{t(catKey(product.category))}</p>
           <h1 className="display mt-3 text-h2">{product.name}</h1>
           <p className="mt-4 text-xl tabular-nums">{formatPrice(product.price)}</p>
-          <p className="mt-6 max-w-md leading-relaxed text-muted">{t(prodKey(product.id))}</p>
+          <p className="mt-6 max-w-md leading-relaxed text-muted">{describe(product, lang)}</p>
 
           <p className={`mt-6 text-sm ${sold ? 'text-danger' : total <= 5 ? 'text-accent' : 'text-muted'}`}>
             {sold ? t('p.sold') : total <= 5 ? t('p.low', { n: total }) : t('p.in')}
@@ -89,7 +88,7 @@ function ProductDetails({ product }: { product: Product }) {
           </div>
           <div className="mt-4 border border-line p-4 text-sm text-muted">
             <p className="text-fg">{t('p.delivery.t')}</p>
-            <p className="mt-1">{t('p.delivery.d', { handle: site.instagramHandle })} <Link href="/info#delivery" className="text-accent underline-offset-4 hover:underline">{t('p.delivery.link')}</Link>.</p>
+            <p className="mt-1">{t('p.delivery.d', { handle: store.instagramHandle })} <Link href="/info#delivery" className="text-accent underline-offset-4 hover:underline">{t('p.delivery.link')}</Link>.</p>
           </div>
         </div>
       </div>

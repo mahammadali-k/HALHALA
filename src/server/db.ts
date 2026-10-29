@@ -2,12 +2,16 @@ import 'server-only'
 import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 import type { DatabaseSync, SQLInputValue } from 'node:sqlite'
-import catalog from '@/data/catalog.json'
+import { photoMeta, type PhotoName } from '@/data/photos.generated'
+import { SEED_PRODUCTS } from './seed'
 
 /**
  * SQLite through Node's built-in `node:sqlite` (Node ≥ 22.13, no native build step).
  * `process.getBuiltinModule` keeps the bundler away from the import; the handle is cached on globalThis so
  * dev hot-reloads reuse one connection. The database is created lazily on first use (never at build time).
+ *
+ * The catalogue (products, photos, stock) and the store settings live here and are edited in the admin panel; on a brand-new
+ * database the catalogue is seeded from ./seed.ts.
  */
 const g = globalThis as unknown as { __halhalaDb?: DatabaseSync }
 
@@ -32,7 +36,20 @@ function open(): DatabaseSync {
     CREATE TABLE IF NOT EXISTS stock (
       product_id TEXT NOT NULL, size TEXT NOT NULL, qty INTEGER NOT NULL CHECK (qty >= 0), PRIMARY KEY (product_id, size)
     );
-    CREATE TABLE IF NOT EXISTS price_overrides (product_id TEXT PRIMARY KEY, price_q INTEGER NOT NULL CHECK (price_q >= 0));
+    CREATE TABLE IF NOT EXISTS products (
+      id TEXT PRIMARY KEY, slug TEXT NOT NULL UNIQUE, name TEXT NOT NULL, category TEXT NOT NULL,
+      price_q INTEGER NOT NULL CHECK (price_q > 0), -- qəpik
+      best_seller INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1,
+      desc_en TEXT NOT NULL DEFAULT '', desc_az TEXT NOT NULL DEFAULT '', desc_ru TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS product_images (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      base TEXT NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL, blur TEXT NOT NULL DEFAULT '',
+      alt TEXT NOT NULL DEFAULT '', position INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_pimg ON product_images(product_id, position);
+    CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS orders (
       id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT NOT NULL UNIQUE,
       user_id INTEGER REFERENCES users(id),
@@ -52,9 +69,7 @@ function open(): DatabaseSync {
   // databases created before card payments existed
   const cols = (d.prepare('PRAGMA table_info(orders)').all() as { name: string }[]).map((c) => c.name)
   for (const col of ['access_token', 'payment_ref', 'paid_at']) if (!cols.includes(col)) d.exec(`ALTER TABLE orders ADD COLUMN ${col} TEXT`)
-  // seed stock for any product/size not tracked yet (existing counts are never overwritten)
-  const seed = d.prepare('INSERT OR IGNORE INTO stock (product_id, size, qty) VALUES (?, ?, ?)')
-  for (const p of catalog) for (const [size, qty] of Object.entries(p.stock)) seed.run(p.id, size, qty)
+  seedCatalog(d)
   d.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now())
   return d
 }
@@ -76,4 +91,26 @@ export interface OrderDbRow {
   id: number; number: string; user_id: number | null; status: string; payment_method: string; payment_status: string
   subtotal: number; delivery_fee: number; total: number; name: string; phone: string; email: string | null; city: string; address: string
   notes: string | null; lang: string | null; access_token: string | null; payment_ref: string | null; paid_at: string | null; created_at: string
+}
+
+/** Brand-new database → insert the starter catalogue. Does nothing once any product exists. */
+function seedCatalog(d: DatabaseSync) {
+  if ((d.prepare('SELECT COUNT(*) n FROM products').get() as { n: number }).n > 0) return
+  d.exec('BEGIN')
+  try {
+    d.exec('DELETE FROM stock')
+    const addProduct = d.prepare(`INSERT INTO products (id, slug, name, category, price_q, best_seller, desc_en, desc_az, desc_ru, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', ?))`)
+    const addImage = d.prepare('INSERT INTO product_images (product_id, base, width, height, blur, alt, position) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    const addStock = d.prepare('INSERT INTO stock (product_id, size, qty) VALUES (?, ?, ?)')
+    SEED_PRODUCTS.forEach((p, i) => {
+      addProduct.run(p.id, p.slug, p.name, p.category, Math.round(p.price * 100), p.bestSeller ? 1 : 0, p.description.en, p.description.az, p.description.ru, `-${SEED_PRODUCTS.length - i} minutes`)
+      p.photos.forEach(([name, alt], pos) => {
+        const m = photoMeta[name as PhotoName]
+        addImage.run(p.id, `/images/${name}`, m.width, m.height, m.blur, alt, pos)
+      })
+      for (const [size, qty] of Object.entries(p.stock)) addStock.run(p.id, size, qty)
+    })
+    d.exec('COMMIT')
+  } catch (e) { d.exec('ROLLBACK'); throw e }
 }

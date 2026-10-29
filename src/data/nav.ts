@@ -1,9 +1,9 @@
-import type { Key } from '@/i18n/core'
-import { colKey } from '@/i18n/core'
-import { collections } from '@/data/products'
+import { images } from '@/data/images'
+import { catKey, type Key } from '@/i18n/core'
+import type { ImageAsset } from '@/types'
 
 export interface NavLinkItem { label: Key; to: string; hint?: Key }
-export interface NavItem { label: Key; to: string; children?: NavLinkItem[]; match?: string[]; /** collection id whose photo is shown in the dropdown */ feature?: string }
+export interface NavItem { label: Key; to: string; children?: NavLinkItem[]; match?: string[]; /** photo + link shown beside the dropdown */ feature?: { image: ImageAsset; href: string; label: Key } }
 
 /** Collection links shared by the header dropdown and the footer. */
 export const shopLinks: NavLinkItem[] = [
@@ -17,14 +17,15 @@ export const shopLinks: NavLinkItem[] = [
 export const nav: NavItem[] = [
   { label: 'menu.home', to: '/' },
   {
-    label: 'nav.collection', to: '/collection', feature: 'mountain-goat', match: ['/collection', '/shop', '/product'],
+    label: 'nav.collection', to: '/collection', feature: { image: images.hero, href: '/shop', label: 'nav.all' }, match: ['/collection', '/shop', '/product'],
     children: [
       ...shopLinks,
-      ...collections.map((c) => ({ label: colKey(c.id, 'title'), to: `/shop?collection=${c.id}`, hint: colKey(c.id, 'blurb') })),
+      { label: catKey('T-Shirts'), to: '/shop?category=T-Shirts' },
+      { label: catKey('Hoodies'), to: '/shop?category=Hoodies' },
     ],
   },
   {
-    label: 'nav.about', to: '/about', feature: 'limited',
+    label: 'nav.about', to: '/about', feature: { image: images.about[0], href: '/about', label: 'nav.story' },
     children: [
       { label: 'nav.story', to: '/about', hint: 'nav.story.hint' },
       { label: 'nav.lookbook', to: '/#lookbook', hint: 'nav.lookbook.hint' },

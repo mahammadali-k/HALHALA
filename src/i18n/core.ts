@@ -1,9 +1,10 @@
 import { az } from './az'
 import { en, type Key } from './en'
 import { ru } from './ru'
+import type { LangId } from '@/types'
 
 /** Framework-free i18n core (usable in Server Components, Route Handlers and the browser). */
-export type Lang = 'az' | 'ru' | 'en'
+export type Lang = LangId
 export type Vars = Record<string, string | number>
 export type TFn = (key: Key, vars?: Vars) => string
 export type { Key }
@@ -24,7 +25,5 @@ export const makeT = (lang: Lang): TFn => (key, vars) => {
 }
 
 /** Typed helpers for ids that map to dictionary keys. */
-export const colKey = (id: string, field: 'title' | 'blurb') => `col.${id}.${field}` as Key
-export const prodKey = (id: string) => `prod.${id}.desc` as Key
 export const catKey = (c: string) => `cat.${c}` as Key
 

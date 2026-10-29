@@ -5,12 +5,13 @@ import { Faq } from '@/components/Faq'
 import { Field } from '@/components/ui/Field'
 import { Heading } from '@/components/ui/Heading'
 import { accentLink } from '@/components/ui/styles'
-import { site } from '@/data/site'
+import { useCatalog } from '@/context/CatalogContext'
+import { instagramUrl } from '@/lib/store'
 import { useI18n } from '@/i18n'
-import { dmChannels } from '@/lib/contact'
 
 export function ContactView() {
   const { t } = useI18n()
+  const { store, channels } = useCatalog()
   const [name, setName] = useState('')
   const [body, setBody] = useState('')
   const [sent, setSent] = useState(false)
@@ -22,7 +23,7 @@ export function ContactView() {
   return (
     <div className="container-x pt-14">
       <Heading as="h1" size="lg" eyebrow={t('ct.eyebrow')} title={t('ct.title')} reveal={false} />
-      <p className="mt-6 max-w-xl text-muted">{t('ct.lead', { channels: dmChannels.map((c) => c.label).join(' / ') })}</p>
+      <p className="mt-6 max-w-xl text-muted">{t('ct.lead', { channels: channels.map((c) => c.label).join(' / ') })}</p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1.2fr_1fr]">
         <form onSubmit={submit} className="space-y-5" aria-label={t('ct.message')}>
@@ -35,10 +36,10 @@ export function ContactView() {
 
         <div>
           <dl className="border-t border-line">
-            {dmChannels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={accentLink} href={c.id === 'instagram' ? site.instagramUrl : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${site.instagramHandle}` : t('ct.open')}</a></dd></div>)}
-            {site.email && <div className={row}><dt className="text-muted">{t('ct.email')}</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>}
-            {site.phone && <div className={row}><dt className="text-muted">{t('ct.phone')}</dt><dd><a href={`tel:${site.phone}`}>{site.phone}</a></dd></div>}
-            {site.address && <div className={row}><dt className="text-muted">{t('ct.address')}</dt><dd>{site.address}</dd></div>}
+            {channels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={accentLink} href={c.id === 'instagram' ? instagramUrl(store) : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${store.instagramHandle}` : t('ct.open')}</a></dd></div>)}
+            {store.email && <div className={row}><dt className="text-muted">{t('ct.email')}</dt><dd><a href={`mailto:${store.email}`}>{store.email}</a></dd></div>}
+            {store.phone && <div className={row}><dt className="text-muted">{t('ct.phone')}</dt><dd><a href={`tel:${store.phone}`}>{store.phone}</a></dd></div>}
+            {store.address && <div className={row}><dt className="text-muted">{t('ct.address')}</dt><dd>{store.address}</dd></div>}
           </dl>
         </div>
       </div>

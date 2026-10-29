@@ -1,40 +1,39 @@
 import 'server-only'
-import catalog from '@/data/catalog.json'
-import type { Size } from '@/types'
-import type { Config, LiveCatalog, PriceMap, StockMap } from '@/types/api'
+import type { Category, Described, ImageAsset, Product, Size } from '@/types'
+import type { Config, LiveCatalog } from '@/types/api'
 import { many } from './db'
 import { paymentMethods } from './payments'
-
-export const baseCatalog = catalog
-export const baseById = new Map(catalog.map((p) => [p.id, p]))
+import { getStore } from './settings'
 
 export const toQepik = (azn: number) => Math.round(azn * 100)
 export const toAzn = (qepik: number) => qepik / 100
 
-/** Admin price overrides win over catalog.json. Prices are kept in qəpik (integers) while computing. */
-export function priceQMap() {
-  const m = new Map(catalog.map((p) => [p.id, toQepik(p.price)]))
-  for (const r of many<{ product_id: string; price_q: number }>('SELECT product_id, price_q FROM price_overrides')) if (m.has(r.product_id)) m.set(r.product_id, r.price_q)
-  return m
+interface ProductDbRow { id: string; slug: string; name: string; category: string; price_q: number; best_seller: number; active: number; desc_en: string; desc_az: string; desc_ru: string; created_at: string }
+interface ImageDbRow { id: number; product_id: string; base: string; width: number; height: number; blur: string; alt: string }
+
+/** Products with their photos and live stock. Storefront = active only; admin passes { all: true }. */
+export function listProducts(opts: { all?: boolean } = {}): Product[] {
+  const rows = many<ProductDbRow>(`SELECT * FROM products ${opts.all ? '' : 'WHERE active = 1'} ORDER BY created_at DESC, rowid DESC`)
+  const images = new Map<string, ImageAsset[]>()
+  for (const r of many<ImageDbRow>('SELECT id, product_id, base, width, height, blur, alt FROM product_images ORDER BY product_id, position, id'))
+    (images.get(r.product_id) ?? images.set(r.product_id, []).get(r.product_id)!).push({ id: r.id, src: r.base, width: r.width, height: r.height, blur: r.blur, alt: r.alt, label: r.alt })
+  const stock = new Map<string, Partial<Record<Size, number>>>()
+  for (const r of many<{ product_id: string; size: Size; qty: number }>('SELECT product_id, size, qty FROM stock'))
+    (stock.get(r.product_id) ?? stock.set(r.product_id, {}).get(r.product_id)!)[r.size] = r.qty
+  return rows.map((r): Product => ({
+    id: r.id, slug: r.slug, name: r.name, category: r.category as Category, price: toAzn(r.price_q),
+    description: { en: r.desc_en, az: r.desc_az, ru: r.desc_ru } satisfies Described,
+    images: (images.get(r.id) ?? []).map((i) => ({ ...i, alt: i.alt || r.name, label: i.alt || r.name })),
+    stock: stock.get(r.id) ?? {}, bestSeller: r.best_seller === 1, active: r.active === 1, createdAt: r.created_at,
+  }))
 }
-export const pricesAzn = (): PriceMap => Object.fromEntries([...priceQMap()].map(([id, q]) => [id, toAzn(q)]))
+export const liveCatalog = (): LiveCatalog => ({ products: listProducts() })
+export const productBySlug = (slug: string) => listProducts().find((p) => p.slug === slug)
 
-export function stockMap(): StockMap {
-  const out: StockMap = {}
-  for (const r of many<{ product_id: string; size: Size; qty: number }>('SELECT product_id, size, qty FROM stock')) (out[r.product_id] ??= {})[r.size] = r.qty
-  return out
-}
-export const liveCatalog = (): LiveCatalog => ({ stock: stockMap(), prices: pricesAzn() })
+export const publicConfig = (): Config => ({ payments: paymentMethods(), currency: 'AZN' })
 
-export const publicConfig = (): Config => ({
-  payments: paymentMethods(),
-  currency: 'AZN',
-  deliveryFee: Number(process.env.DELIVERY_FEE_AZN) || 0,
-  freeDeliveryFrom: process.env.FREE_DELIVERY_FROM_AZN ? Number(process.env.FREE_DELIVERY_FROM_AZN) : null,
-})
-
+/** Delivery fee (qəpik) for a subtotal, from the admin-editable store settings. */
 export function deliveryFeeQ(subtotalQ: number) {
-  const fee = toQepik(Number(process.env.DELIVERY_FEE_AZN) || 0)
-  const free = process.env.FREE_DELIVERY_FROM_AZN ? toQepik(Number(process.env.FREE_DELIVERY_FROM_AZN)) : null
-  return free !== null && subtotalQ >= free ? 0 : fee
+  const { deliveryFee, freeDeliveryFrom } = getStore()
+  return freeDeliveryFrom !== null && subtotalQ >= toQepik(freeDeliveryFrom) ? 0 : toQepik(deliveryFee)
 }

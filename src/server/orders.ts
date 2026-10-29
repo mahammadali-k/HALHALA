@@ -5,7 +5,7 @@ import { clean, isEmail, isPhone, phoneTail } from '@/lib/validate'
 import type { Size } from '@/types'
 import type { CheckoutContact, CreatedOrder, Order, OrderStatus } from '@/types/api'
 import { getSessionUser, requireUser, userFromRequest } from './auth'
-import { baseById, deliveryFeeQ, liveCatalog, priceQMap, toAzn } from './catalog'
+import { deliveryFeeQ, listProducts, liveCatalog, toAzn, toQepik } from './catalog'
 import { many, one, run, tx, type OrderDbRow } from './db'
 import { ApiError, assertNotLimited, clientIp, limiter, readJson } from './http'
 import { notifyOwner } from './notify'
@@ -131,9 +131,10 @@ export async function createOrder(req: NextRequest): Promise<CreatedOrder> {
   // ---- validate (prices and totals from the client are never trusted) ----
   const raw = Array.isArray(b.items) ? b.items : []
   if (!raw.length || raw.length > 20) throw new ApiError(400, 'invalid_input')
+  const catalog = new Map(listProducts().map((p) => [p.id, p])) // active products only
   const lines = new Map<string, { id: string; size: Size; quantity: number }>()
   for (const it of raw) {
-    const p = baseById.get(String(it?.productId)), size = clean(it?.size, 12), quantity = Number(it?.quantity)
+    const p = catalog.get(String(it?.productId)), size = clean(it?.size, 12), quantity = Number(it?.quantity)
     if (!p || !(size in p.stock) || !Number.isInteger(quantity) || quantity < 1 || quantity > 10) throw new ApiError(400, 'invalid_input')
     const k = `${p.id}|${size}`
     lines.set(k, { id: p.id, size: size as Size, quantity: (lines.get(k)?.quantity ?? 0) + quantity })
@@ -152,7 +153,7 @@ export async function createOrder(req: NextRequest): Promise<CreatedOrder> {
   const lang = ['az', 'ru', 'en'].includes(String(b.lang)) ? String(b.lang) : 'en'
 
   // ---- reserve stock + store the order atomically ----
-  const prices = priceQMap()
+  const priceQ = (id: string) => toQepik(catalog.get(id)!.price)
   const token = randomBytes(18).toString('base64url')
   const row = tx(() => {
     const short = [...lines.values()].flatMap((l) => {
@@ -162,12 +163,12 @@ export async function createOrder(req: NextRequest): Promise<CreatedOrder> {
     if (short.length) throw new ApiError(409, 'out_of_stock', { items: short })
     for (const l of lines.values()) run('UPDATE stock SET qty = qty - ? WHERE product_id = ? AND size = ?', l.quantity, l.id, l.size)
 
-    const subtotal = [...lines.values()].reduce((n, l) => n + prices.get(l.id)! * l.quantity, 0)
+    const subtotal = [...lines.values()].reduce((n, l) => n + priceQ(l.id) * l.quantity, 0)
     const fee = deliveryFeeQ(subtotal)
     const { lastInsertRowid } = run(`INSERT INTO orders (number, user_id, payment_method, payment_status, subtotal, delivery_fee, total, name, phone, email, city, address, notes, lang, access_token)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newNumber(), user?.id ?? null, method, method === 'card' ? 'pending' : 'unpaid', subtotal, fee, subtotal + fee,
       contact.name, contact.phone, contact.email || null, contact.city, contact.address, contact.notes || null, lang, token)
-    for (const l of lines.values()) run('INSERT INTO order_items (order_id, product_id, name, size, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)', lastInsertRowid, l.id, baseById.get(l.id)!.name, l.size, l.quantity, prices.get(l.id)!)
+    for (const l of lines.values()) run('INSERT INTO order_items (order_id, product_id, name, size, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)', lastInsertRowid, l.id, catalog.get(l.id)!.name, l.size, l.quantity, priceQ(l.id))
     return orderById(Number(lastInsertRowid))
   })
 

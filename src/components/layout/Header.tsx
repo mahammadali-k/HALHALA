@@ -4,22 +4,24 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Drawer } from '@/components/ui/Drawer'
+import { iconBtn } from '@/components/ui/styles'
 import { BagIcon, MenuIcon, SearchIcon, UserIcon } from '@/components/ui/icons'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { sectionTag } from '@/data/nav'
-import { site } from '@/data/site'
+import { useCatalog } from '@/context/CatalogContext'
 import { useI18n } from '@/i18n'
 import { LangSwitch } from './LangSwitch'
+import { ThemeToggle } from './ThemeToggle'
 import { DesktopNav, MobileNav } from './NavMenu'
 import { Wordmark } from './Wordmark'
 
-const iconBtn = 'relative p-2 transition-colors hover:text-accent-deep'
 
 export function Header() {
   const { count, open: openCart } = useCart()
   const { t } = useI18n()
   const { user } = useAuth()
+  const { store } = useCatalog()
   const router = useRouter()
   const path = usePathname()
   const [menu, setMenu] = useState(false)
@@ -42,13 +44,14 @@ export function Header() {
       {/* design annotation strip: [ CURRENT SECTION ] … [ EST. YEAR ] */}
       <div className="container-x hidden items-center justify-between pt-2 md:flex">
         <span className="tag">[ {t(sectionTag(path))} ]</span>
-        <span className="tag">[ {t('tag.est', { year: site.est })} ]</span>
+        {store.est ? <span className="tag">[ {t('tag.est', { year: store.est })} ]</span> : <span />}
       </div>
       <div className="container-x grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 md:-mt-1 md:h-[3.75rem] lg:gap-6">
         <Link href="/" aria-label="HALHALA — home" className="shrink-0"><Wordmark /></Link>
         <div className="flex justify-center"><DesktopNav /></div>
         <div className="flex items-center gap-0.5">
           <LangSwitch className="mr-2 hidden sm:flex" />
+          <ThemeToggle />
           <Link href={user ? '/account' : '/login'} className={iconBtn} aria-label={user ? `${t('acc.aria')}: ${user.name}` : t('acc.login')}>
             <UserIcon />
             {user && <span aria-hidden className="absolute right-1 top-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />}
@@ -59,7 +62,7 @@ export function Header() {
             <AnimatePresence>
               {count > 0 && (
                 <m.span key={count} initial={{ scale: 1.5 }} animate={{ scale: 1 }}
-                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-violet px-1 text-[0.6rem] tabular-nums">{count}</m.span>
+                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-violet px-1 text-[0.6rem] text-on-violet tabular-nums">{count}</m.span>
               )}
             </AnimatePresence>
           </button>
@@ -78,7 +81,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="right" footer={<LangSwitch className="w-fit" />}>
+      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="right" footer={<div className="flex items-center gap-3"><LangSwitch className="w-fit" /><ThemeToggle /></div>}>
         <MobileNav onNavigate={() => setMenu(false)} />
       </Drawer>
     </header>

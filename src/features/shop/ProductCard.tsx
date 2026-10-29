@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         <div className="pointer-events-none absolute inset-0 bg-violet/15 mix-blend-color" aria-hidden />
         {sold && <span className="tag absolute left-2 top-2 bg-ink/90 px-2 py-1">{t('badge.sold')}</span>}
-        {!sold && product.bestSeller && <span className="tag absolute left-2 top-2 bg-violet px-2 py-1 text-fg">{t('badge.best')}</span>}
+        {!sold && product.bestSeller && <span className="tag absolute left-2 top-2 bg-violet px-2 py-1 text-on-violet">{t('badge.best')}</span>}
       </div>
       <div className="flex items-end justify-between gap-2 border-t border-line px-3 py-3 sm:px-4">
         <div className="min-w-0">

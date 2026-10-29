@@ -1,4 +1,4 @@
-import { CollectionGrid } from '@/features/home/CollectionGrid'
+import { CategoryGrid } from '@/features/home/CategoryGrid'
 import { HeroSection } from '@/features/home/HeroSection'
 import { FeatureStrip, HowItWorks, QuestionsBand } from '@/features/home/HomeSections'
 import { InstagramGallery } from '@/features/home/InstagramGallery'
@@ -12,7 +12,7 @@ export default function HomePage() {
       <TeeSection />
       <Manifesto />
       <FeatureStrip />
-      <CollectionGrid />
+      <CategoryGrid />
       <HowItWorks />
       <InstagramGallery />
       <QuestionsBand />

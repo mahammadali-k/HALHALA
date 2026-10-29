@@ -1,17 +1,15 @@
 'use client'
-import { collections, products } from '@/data/products'
-import { catKey, colKey, useI18n, type Key } from '@/i18n'
+import { useCatalog } from '@/context/CatalogContext'
+import { catKey, useI18n, type Key } from '@/i18n'
+import { activeCategories } from '@/lib/catalog'
 import type { Category } from '@/types'
 
 export interface Filters {
   category: Category | ''
-  collection: string
   price: '' | 'under-50' | '50-100' | 'over-100'
   inStock: boolean
 }
 
-/** Only categories that actually have products. */
-export const categories: Category[] = [...new Set(products.map((p) => p.category))]
 export const priceBuckets: { id: Filters['price']; label: Key; test: (n: number) => boolean }[] = [
   { id: 'under-50', label: 'f.under50', test: (n) => n < 50 },
   { id: '50-100', label: 'f.50100', test: (n) => n >= 50 && n <= 100 },
@@ -40,6 +38,7 @@ function Radio({ name, checked, label, onSelect }: { name: string; checked: bool
 
 export function FilterPanel({ filters, onChange, onReset }: Props) {
   const { t } = useI18n()
+  const categories = activeCategories(useCatalog().products)
   return (
     <div className="space-y-6">
       {categories.length > 1 && (
@@ -48,10 +47,6 @@ export function FilterPanel({ filters, onChange, onReset }: Props) {
           {categories.map((c) => <Radio key={c} name="cat" checked={filters.category === c} label={t(catKey(c))} onSelect={() => onChange({ category: c })} />)}
         </Group>
       )}
-      <Group legend={t('f.collection')}>
-        <Radio name="col" checked={filters.collection === ''} label={t('f.all')} onSelect={() => onChange({ collection: '' })} />
-        {collections.map((c) => <Radio key={c.id} name="col" checked={filters.collection === c.id} label={t(colKey(c.id, 'title'))} onSelect={() => onChange({ collection: c.id })} />)}
-      </Group>
       <Group legend={t('f.price')}>
         <Radio name="price" checked={filters.price === ''} label={t('f.any')} onSelect={() => onChange({ price: '' })} />
         {priceBuckets.map((b) => <Radio key={b.id} name="price" checked={filters.price === b.id} label={t(b.label)} onSelect={() => onChange({ price: b.id })} />)}

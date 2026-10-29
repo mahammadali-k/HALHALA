@@ -1,7 +1,9 @@
 'use client'
 import { useState } from 'react'
 import { useI18n } from '@/i18n'
-import { dmChannels, sendVia, type Channel } from '@/lib/contact'
+import { useCatalog } from '@/context/CatalogContext'
+import { sendVia } from '@/lib/contact'
+import type { Channel } from '@/lib/store'
 import { Button } from '@/components/ui/Button'
 
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
 /** One button per configured messaging channel. Copies the message, opens the chat, tells the user what to do next. */
 export function ContactActions({ message, variant = 'accent', className = '' }: Props) {
   const { t } = useI18n()
+  const { channels } = useCatalog()
   const [status, setStatus] = useState<string | null>(null)
   const go = async (c: Channel) => {
     const r = await sendVia(c, message)
@@ -22,7 +25,7 @@ export function ContactActions({ message, variant = 'accent', className = '' }: 
   return (
     <div className={className}>
       <div className="flex flex-wrap gap-3">
-        {dmChannels.map((c) => <Button key={c.id} variant={variant} onClick={() => go(c)}>{t('ca.button', { channel: c.label })}</Button>)}
+        {channels.map((c) => <Button key={c.id} variant={variant} onClick={() => go(c)}>{t('ca.button', { channel: c.label })}</Button>)}
       </div>
       <p role="status" className="mt-3 text-sm text-muted">{status}</p>
     </div>

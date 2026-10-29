@@ -6,9 +6,9 @@ import type { ButtonHTMLAttributes, ComponentProps } from 'react'
 const base =
   'inline-flex items-center justify-center gap-2 px-7 py-3.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.22em] transition-[colors,transform] disabled:cursor-not-allowed disabled:opacity-40'
 const variants = {
-  primary: 'bg-violet text-fg hover:bg-violet-hi border border-violet',
+  primary: 'bg-violet text-on-violet hover:bg-violet-hi border border-violet',
   outline: 'border border-line text-fg hover:border-violet hover:bg-violet/25',
-  accent: 'border border-accent/70 text-accent hover:border-violet hover:bg-violet hover:text-fg',
+  accent: 'border border-accent/70 text-accent hover:border-violet hover:bg-violet hover:text-on-violet',
 }
 type Variant = keyof typeof variants
 

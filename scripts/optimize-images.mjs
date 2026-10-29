@@ -2,7 +2,7 @@
 // Reads the original photos (mapped below), writes responsive WebP files to public/images
 // and a typed manifest (dimensions + tiny blur placeholder) to src/data/photos.generated.ts.
 import sharp from 'sharp'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const src = process.argv[2]
@@ -13,20 +13,29 @@ const map = {
   '7.jpg': 'laundry-side', '8.jpg': 'laundry-cam', '9.jpg': 'laundry-full', '10.jpg': 'laundry-close',
   '11.jpg': 'wall-glasses-high', '12.jpg': 'wall-glasses-cam', '13.jpg': 'carpet-blur', '14.jpg': 'carpet-motion',
   '15.jpg': 'bench-low', '16.jpg': 'bench-zoom', '17.jpg': 'bench-glasses', '18.jpg': 'bench-motion', '19.jpg': 'back-logo',
+  // product photos
+  '25.jpg': 'tee-bmw', '26.jpg': 'tee-ferrari', '27.jpg': 'tee-bmw-classic', '28.jpg': 'tee-mercedes', '29.jpg': 'hoodie-bmw', '30.jpg': 'hoodie-ferrari',
 }
 const widths = [480, 800, 1200, 1600]
 const out = 'public/images'
 await mkdir(out, { recursive: true })
 
-const manifest = {}
+// keep entries of photos whose originals are not in this folder (their optimised files already exist)
+let manifest = {}
+try {
+  const prev = await readFile('src/data/photos.generated.ts', 'utf8')
+  manifest = JSON.parse(prev.split('export const photoMeta = ')[1].split(' as const')[0])
+} catch { /* first run */ }
+
 for (const [file, name] of Object.entries(map)) {
+  try { await access(path.join(src, file)) } catch { continue }
   const img = sharp(path.join(src, file), { limitInputPixels: false }).rotate()
   const meta = await img.metadata()
   const [w, h] = meta.orientation && meta.orientation >= 5 ? [meta.height, meta.width] : [meta.width, meta.height]
   for (const width of widths) {
     await img.clone().resize({ width, withoutEnlargement: true }).webp({ quality: 74, effort: 5 }).toFile(`${out}/${name}-${width}.webp`)
   }
-  const blur = await img.clone().resize({ width: 16 }).webp({ quality: 40 }).toBuffer()
+  const blur = await img.clone().resize({ width: 12 }).webp({ quality: 30 }).toBuffer()
   manifest[name] = { width: w, height: h, blur: `data:image/webp;base64,${blur.toString('base64')}` }
   console.log(name, w, 'x', h)
 }
