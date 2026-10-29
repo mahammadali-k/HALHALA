@@ -1,27 +1,26 @@
-import type { Key } from '../i18n/en'
-import { colKey } from '../i18n'
-import { collections } from './products'
+import type { Key } from '@/i18n/core'
+import { colKey } from '@/i18n/core'
+import { collections } from '@/data/products'
 
 export interface NavLinkItem { label: Key; to: string; hint?: Key }
-export interface NavItem { label: Key; to: string; children?: NavLinkItem[]; /** collection id whose photo is shown in the dropdown */ feature?: string }
+export interface NavItem { label: Key; to: string; children?: NavLinkItem[]; match?: string[]; /** collection id whose photo is shown in the dropdown */ feature?: string }
 
-/** Single source of truth for header, mobile menu and footer navigation (labels are dictionary keys). */
+/** Collection links shared by the header dropdown and the footer. */
+export const shopLinks: NavLinkItem[] = [
+  { label: 'nav.all', to: '/shop', hint: 'nav.all.hint' },
+  { label: 'nav.new', to: '/shop?sort=newest', hint: 'nav.new.hint' },
+  { label: 'nav.best', to: '/shop?sort=featured', hint: 'nav.best.hint' },
+  { label: 'nav.instock', to: '/shop?stock=1', hint: 'nav.instock.hint' },
+]
+
+/** Single source of truth for the header, the mobile menu and the footer. `match` = path prefixes that mark the item active. */
 export const nav: NavItem[] = [
   { label: 'menu.home', to: '/' },
   {
-    label: 'nav.shop', to: '/shop', feature: 'mountain-goat',
+    label: 'nav.collection', to: '/collection', feature: 'mountain-goat', match: ['/collection', '/shop', '/product'],
     children: [
-      { label: 'nav.all', to: '/shop', hint: 'nav.all.hint' },
-      { label: 'nav.new', to: '/shop?sort=newest', hint: 'nav.new.hint' },
-      { label: 'nav.best', to: '/shop?sort=featured', hint: 'nav.best.hint' },
-      { label: 'nav.instock', to: '/shop?stock=1', hint: 'nav.instock.hint' },
-    ],
-  },
-  {
-    label: 'nav.collection', to: '/collection', feature: 'essentials',
-    children: [
+      ...shopLinks,
       ...collections.map((c) => ({ label: colKey(c.id, 'title'), to: `/shop?collection=${c.id}`, hint: colKey(c.id, 'blurb') })),
-      { label: 'nav.allcollections', to: '/collection' },
     ],
   },
   {
@@ -40,3 +39,18 @@ export const nav: NavItem[] = [
     ],
   },
 ]
+
+/** Which "[ SECTION ]" label the header shows for a path. */
+export const sectionTag = (path: string): Key =>
+  path === '/' ? 'tag.home'
+  : path.startsWith('/shop') || path.startsWith('/collection') ? 'tag.collection'
+  : path.startsWith('/product') ? 'tag.product'
+  : path.startsWith('/about') ? 'tag.about'
+  : path.startsWith('/contact') ? 'tag.contact'
+  : path.startsWith('/info') ? 'tag.info'
+  : path.startsWith('/cart') ? 'tag.cart'
+  : path.startsWith('/checkout') ? 'tag.checkout'
+  : path.startsWith('/order') ? 'tag.order'
+  : path.startsWith('/admin') ? 'tag.admin'
+  : path.startsWith('/account') || path.startsWith('/login') || path.startsWith('/register') ? 'tag.account'
+  : 'tag.home'

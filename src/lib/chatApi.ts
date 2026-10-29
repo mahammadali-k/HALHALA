@@ -1,24 +1,23 @@
-import { products } from '../data/products'
-import { site } from '../data/site'
-import { makeT, prodKey, type Lang } from '../i18n'
-import type { Size } from '../types'
-import { stockFor } from './catalog'
+import { site } from '@/data/site'
+import { makeT, prodKey, type Lang } from '@/i18n'
+import type { Product } from '@/types'
+import { sizesOf, stockFor } from '@/lib/catalog'
 
 export interface ApiMessage { role: 'user' | 'assistant'; content: string }
 
 /** Everything the AI is allowed to know — built from the same data the shop renders. */
-export function buildContext(lang: Lang, cart: { count: number; total: number }, shop: { online: boolean; payments: string[] }) {
+export function buildContext(lang: Lang, cart: { count: number; total: number }, products: Product[], payments: string[]) {
   const t = makeT(lang)
   return {
     catalogue: products.map((p) => {
-      const sizes = Object.keys(p.stock) as Size[]
+      const sizes = sizesOf(p)
       return {
         name: p.name, url: `/product/${p.slug}`, priceAZN: p.price, category: p.category, description: t(prodKey(p.id)), bestSeller: Boolean(p.bestSeller),
         sizesInStock: sizes.filter((s) => stockFor(p, s) > 0), soldOutSizes: sizes.filter((s) => stockFor(p, s) === 0),
       }
     }),
     cart: { items: cart.count, totalAZN: cart.total },
-    shop,
+    shop: { online: true, payments },
     brand: {
       instagram: site.instagramUrl, tiktok: site.tiktokUrl, email: site.email, phone: site.phone, address: site.address,
       deliveryPolicy: site.deliveryPolicy, returnsPolicy: site.returnsPolicy,
@@ -67,11 +66,11 @@ const TOKEN = /\[\[(link:([^|\]]+)\|([^\]]+)|handoff)\]\]/g
 const SAFE_PATH = /^\/(shop|cart|checkout|info|contact|about|collection|product\/[\w-]+)?([?#][\w=&%-]*)?$/
 
 /** Splits the model's text from its [[link:…]] / [[handoff]] action tokens (also hides a still-streaming partial token). */
-export function parseActions(raw: string): { text: string; actions: { label: string; to?: string; handoff?: boolean }[] } {
-  const actions: { label: string; to?: string; handoff?: boolean }[] = []
+export function parseActions(raw: string): { text: string; actions: { label: string; href?: string; handoff?: boolean }[] } {
+  const actions: { label: string; href?: string; handoff?: boolean }[] = []
   const text = raw.replace(TOKEN, (_m, kind: string, to?: string, label?: string) => {
     if (kind === 'handoff') actions.push({ label: '', handoff: true })
-    else if (to && label && SAFE_PATH.test(to.trim()) && actions.filter((a) => a.to).length < 3) actions.push({ label: label.trim(), to: to.trim() })
+    else if (to && label && SAFE_PATH.test(to.trim()) && actions.filter((a) => a.href).length < 3) actions.push({ label: label.trim(), href: to.trim() })
     return ''
   }).replace(/\[\[[^\]]*$/, '').trim()
   return { text, actions }

@@ -1,14 +1,10 @@
-import type { ImageAsset } from '../types'
-import { PHOTO_WIDTHS, photoMeta, type PhotoName } from './photos.generated'
+import type { ImageAsset } from '@/types'
+import { photoMeta, type PhotoName } from '@/data/photos.generated'
 
 /** Build an ImageAsset from an optimised photo (files live in /public/images, see scripts/optimize-images.mjs). */
 export const photo = (name: PhotoName, alt: string, pos = 'center 30%'): ImageAsset => {
   const m = photoMeta[name]
-  return {
-    src: `/images/${name}-800.webp`,
-    srcSet: PHOTO_WIDTHS.map((w) => `/images/${name}-${w}.webp ${w}w`).join(', '),
-    width: m.width, height: m.height, blur: m.blur, pos, alt, label: name,
-  }
+  return { src: `/images/${name}`, width: m.width, height: m.height, blur: m.blur, pos, alt, label: name }
 }
 
 /**
@@ -17,6 +13,8 @@ export const photo = (name: PhotoName, alt: string, pos = 'center 30%'): ImageAs
  */
 export const images = {
   logo: { alt: 'HALHALA', label: 'LOGO' } as ImageAsset,
+  /** Optional transparent cut-out for the hero (e.g. goat on the car). Provide a photo() via `npm run images` and it replaces the framed photo. */
+  heroArt: undefined as ImageAsset | undefined,
   hero: photo('laundry-side', 'Model in the HALHALA goat tee, standing in a courtyard with laundry lines', 'center 28%'),
   heroSecondary: photo('carpet-blur', 'HALHALA goat tee in front of a red carpet, motion-blurred portrait', 'center 55%'),
   story: photo('carpet-motion', 'Model with eyes closed in motion blur in front of a red carpet', 'center 30%'),

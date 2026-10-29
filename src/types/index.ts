@@ -4,10 +4,8 @@ export const SIZES: Size[] = ['S', 'M', 'L', 'XL', 'XXL', 'One Size']
 export type Category = 'T-Shirts' | 'Hoodies' | 'Accessories'
 
 export interface ImageAsset {
-  /** Public URL / import path. Leave undefined to render a labelled placeholder. */
+  /** Base path of an optimised photo, e.g. "/images/laundry-side" (files `-480/-800/-1200/-1600.webp` sit next to it). Leave undefined for a labelled placeholder. */
   src?: string
-  /** Responsive candidates, e.g. "/images/a-480.webp 480w, …" */
-  srcSet?: string
   width?: number
   height?: number
   /** Tiny inline placeholder shown while the real image loads. */

@@ -1,8 +1,8 @@
-# Render Blueprint: one Docker web service (site + API) with a persistent disk for the SQLite database.
+# Render Blueprint: one Docker web service (the whole Next.js app: pages + API) with a persistent disk for the SQLite database.
 # Render → New → Blueprint → pick this repo. Fill the secrets marked "sync: false" in the dashboard.
 services:
   - type: web
-    name: halhala-az        # → https://halhala-az.onrender.com (if the name is taken, Render adds a suffix: update vercel.json to match)
+    name: halhala-az        # → https://halhala-az.onrender.com (Render adds a suffix if the name is taken; set PUBLIC_URL to the real address)
     runtime: docker
     plan: starter            # persistent disks need a paid instance
     healthCheckPath: /api/config

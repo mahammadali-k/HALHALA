@@ -19,4 +19,6 @@ export const site = {
   deliveryPolicy: null as string | null,
   returnsPolicy: null as string | null,
   currency: 'AZN',
+  /** Shown as "[ EST. 2024 ]" in the header and footer — taken from the design brief; confirm or change. */
+  est: '2024',
 }

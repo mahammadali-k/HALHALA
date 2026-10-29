@@ -1,19 +1,19 @@
-import { products } from '../data/products'
-import { site } from '../data/site'
-import { makeT, prodKey, type Lang } from '../i18n'
-import { dmChannels } from './contact'
-import { isSoldOut, stockFor } from './catalog'
-import { formatPrice } from './format'
-import type { Product, Size } from '../types'
+import { site } from '@/data/site'
+import { makeT, prodKey, type Lang } from '@/i18n'
+import { dmChannels } from '@/lib/contact'
+import { isSoldOut, stockFor } from '@/lib/catalog'
+import { formatPrice } from '@/lib/format'
+import type { Product, Size } from '@/types'
 
 /**
  * Built-in assistant engine (offline fallback). Fully client-side: answers from the real catalogue/cart/site data
  * and says so when something isn't published. Rule-based, not an LLM — the live AI chat in ChatPanel talks to
  * the server (server/index.mjs) and falls back to this when that server isn't reachable.
  */
-export interface BotAction { label: string; to?: string; handoff?: boolean }
+export interface BotAction { label: string; href?: string; handoff?: boolean }
 export interface BotReply { text: string; actions?: BotAction[] }
-export interface Ctx { count: number; total: number; /** true when the shop backend (online ordering) is reachable */ online?: boolean; payments?: string[] }
+/** `products` must be the LIVE catalogue (useCatalog().products) so stock and prices are current. */
+export interface Ctx { count: number; total: number; payments: string[]; products: Product[] }
 
 // Lowercase, map Azerbaijani letters to Latin base letters, keep Latin + Cyrillic.
 const fold = (s: string) =>
@@ -23,7 +23,7 @@ const any = (t: string, words: string[]) => words.some((w) => t.includes(w))
 const L = (lang: Lang, en: string, az: string, ru: string) => (lang === 'az' ? az : lang === 'ru' ? ru : en)
 
 const STOP = new Set(['halhala', 'tee', 'tshirt', 'shirt', 'the', 'and'])
-const matchProduct = (t: string): Product | undefined => {
+const matchProduct = (t: string, products: Product[]): Product | undefined => {
   let best: { p: Product; score: number } | undefined
   for (const p of products) {
     const words = fold(p.name).split(' ').filter((w) => w.length > 2 && !STOP.has(w))
@@ -44,8 +44,8 @@ const sizesLine = (p: Product, lang: Lang) => {
   const b = out.length ? L(lang, ` Sold out: ${out.join(', ')}.`, ` Bitib: ${out.join(', ')}.`, ` Нет в наличии: ${out.join(', ')}.`) : ''
   return a + b
 }
-const openProduct = (p: Product, lang: Lang): BotAction[] => [{ label: L(lang, `Open ${p.name}`, `${p.name} səhifəsi`, `Открыть: ${p.name}`), to: `/product/${p.slug}` }]
-const list = (items: Product[]): BotAction[] => items.map((x) => ({ label: `${x.name} · ${formatPrice(x.price)}`, to: `/product/${x.slug}` }))
+const openProduct = (p: Product, lang: Lang): BotAction[] => [{ label: L(lang, `Open ${p.name}`, `${p.name} səhifəsi`, `Открыть: ${p.name}`), href: `/product/${p.slug}` }]
+const list = (items: Product[]): BotAction[] => items.map((x) => ({ label: `${x.name} · ${formatPrice(x.price)}`, href: `/product/${x.slug}` }))
 
 export const quickReplies = (lang: Lang) => {
   const t = makeT(lang)
@@ -55,8 +55,9 @@ export const quickReplies = (lang: Lang) => {
 export function reply(input: string, ctx: Ctx, lang: Lang): BotReply {
   const t = fold(input)
   const tt = makeT(lang)
+  const { products } = ctx
   const handoff: BotAction = { label: L(lang, 'Message the team', 'Komandaya yaz', 'Написать команде'), handoff: true }
-  const infoPage: BotAction = { label: tt('nav.delivery'), to: '/info' }
+  const infoPage: BotAction = { label: tt('nav.delivery'), href: '/info' }
   const channels = dmChannels.map((c) => c.label).join(L(lang, ' and ', ' və ', ' и '))
 
   if (!t) return { text: L(lang, 'Type a question and I will help.', 'Sualınızı yazın, kömək edim.', 'Напишите вопрос — я помогу.') }
@@ -69,37 +70,31 @@ export function reply(input: string, ctx: Ctx, lang: Lang): BotReply {
 
   if (any(t, ['sebet', 'cart', 'checkout', 'basket', 'корзин', 'оформ']))
     return ctx.count
-      ? { text: L(lang, `You have ${ctx.count} item(s) in your cart — ${formatPrice(ctx.total)}.`, `Səbətinizdə ${ctx.count} məhsul var — ${formatPrice(ctx.total)}.`, `В корзине товаров: ${ctx.count} — ${formatPrice(ctx.total)}.`), actions: [{ label: tt('cart.view'), to: '/cart' }, { label: tt('cart.checkout'), to: '/checkout' }] }
-      : { text: tt('cart.empty'), actions: [{ label: tt('cart.continue'), to: '/shop' }] }
+      ? { text: L(lang, `You have ${ctx.count} item(s) in your cart — ${formatPrice(ctx.total)}.`, `Səbətinizdə ${ctx.count} məhsul var — ${formatPrice(ctx.total)}.`, `В корзине товаров: ${ctx.count} — ${formatPrice(ctx.total)}.`), actions: [{ label: tt('cart.view'), href: '/cart' }, { label: tt('cart.checkout'), href: '/checkout' }] }
+      : { text: tt('cart.empty'), actions: [{ label: tt('cart.continue'), href: '/shop' }] }
 
-  if (any(t, ['odenis', 'payment', 'pay ', 'card', 'оплат', 'карт'])) {
-    if (ctx.online) {
-      const card = ctx.payments?.includes('card')
-      return { text: card
-        ? L(lang, 'You can pay online by card on the bank’s secure page, or pay on delivery. Choose at checkout.', 'Bankın təhlükəsiz səhifəsində kartla onlayn ödəyə və ya çatdırılma zamanı ödəyə bilərsiniz. Sifariş zamanı seçin.', 'Можно оплатить картой онлайн на защищённой странице банка или при получении. Выберите при оформлении.')
-        : L(lang, 'You can pay on delivery. Online card payment is not enabled yet.', 'Çatdırılma zamanı ödəyə bilərsiniz. Kartla onlayn ödəniş hələ aktiv deyil.', 'Можно оплатить при получении. Онлайн-оплата картой пока не включена.'), actions: [{ label: tt('cart.checkout'), to: '/checkout' }] }
-    }
-    return { text: L(lang, 'Online payment is not connected yet. Payment is arranged with the brand when your order is confirmed.', 'Onlayn ödəniş hələ qoşulmayıb. Ödəniş sifariş təsdiqlənərkən brend ilə razılaşdırılır.', 'Онлайн-оплата пока не подключена. Оплата согласовывается с брендом при подтверждении заказа.'), actions: [handoff] }
-  }
+  if (any(t, ['odenis', 'payment', 'pay ', 'card', 'оплат', 'карт']))
+    return { text: ctx.payments.includes('card')
+      ? L(lang, 'You can pay online by card on the bank’s secure page, or pay on delivery. Choose at checkout.', 'Bankın təhlükəsiz səhifəsində kartla onlayn ödəyə və ya çatdırılma zamanı ödəyə bilərsiniz. Sifariş zamanı seçin.', 'Можно оплатить картой онлайн на защищённой странице банка или при получении. Выберите при оформлении.')
+      : L(lang, 'You can pay on delivery. Online card payment is not enabled yet.', 'Çatdırılma zamanı ödəyə bilərsiniz. Kartla onlayn ödəniş hələ aktiv deyil.', 'Можно оплатить при получении. Онлайн-оплата картой пока не включена.'),
+      actions: [{ label: tt('cart.checkout'), href: '/checkout' }] }
 
   if (any(t, ['catdirilma', 'catdirma', 'delivery', 'shipping', 'cargo', 'достав']))
     return { text: site.deliveryPolicy ?? L(lang, 'Delivery terms are not published on the site yet — the brand confirms them when you order. I can send your question to the team.', 'Çatdırılma şərtləri hələ saytda dərc olunmayıb — brend sifariş zamanı təsdiq edir. Sualınızı komandaya göndərə bilərəm.', 'Условия доставки пока не опубликованы — бренд подтверждает их при заказе. Могу отправить ваш вопрос команде.'), actions: [infoPage, handoff] }
 
   if (any(t, ['qaytarma', 'return', 'refund', 'exchange', 'deyis', 'возврат', 'обмен', 'вернуть']))
-    return { text: site.returnsPolicy ?? L(lang, 'Return terms are not published on the site yet — the brand confirms them when you order. I can send your question to the team.', 'Qaytarma şərtləri hələ saytda dərc olunmayıb — brend sifariş zamanı təsdiq edir. Sualınızı komandaya göndərə bilərəm.', 'Условия возврата пока не опубликованы — бренд подтверждает их при заказе. Могу отправить ваш вопрос команде.'), actions: [{ ...infoPage, to: '/info#returns' }, handoff] }
+    return { text: site.returnsPolicy ?? L(lang, 'Return terms are not published on the site yet — the brand confirms them when you order. I can send your question to the team.', 'Qaytarma şərtləri hələ saytda dərc olunmayıb — brend sifariş zamanı təsdiq edir. Sualınızı komandaya göndərə bilərəm.', 'Условия возврата пока не опубликованы — бренд подтверждает их при заказе. Могу отправить ваш вопрос команде.'), actions: [{ ...infoPage, href: '/info#returns' }, handoff] }
 
   if (any(t, ['sifaris', 'order', 'buy', 'nece al', 'how do i', 'как зак', 'как куп', 'заказ']))
-    return ctx.online
-      ? { text: L(lang, '1) Pick a size and add to cart. 2) Open checkout, enter your delivery details and choose how to pay. 3) Place the order — you get an order number and the brand contacts you to confirm delivery.', '1) Ölçünü seçib səbətə əlavə edin. 2) Sifariş səhifəsində çatdırılma məlumatlarını yazıb ödəniş üsulunu seçin. 3) Sifarişi verin — sizə sifariş nömrəsi verilir və brend çatdırılmanı təsdiqləmək üçün əlaqə saxlayır.', '1) Выберите размер и добавьте в корзину. 2) На странице оформления укажите данные и выберите способ оплаты. 3) Оформите заказ — вы получите номер заказа, а бренд свяжется с вами для подтверждения доставки.'), actions: [{ label: tt('hero.cta'), to: '/shop' }, { label: tt('cart.checkout'), to: '/checkout' }] }
-      : { text: L(lang, '1) Pick a size and add to cart. 2) Open checkout and fill in your details. 3) Send the prepared order message on Instagram or TikTok — the brand confirms your order.', '1) Ölçünü seçib səbətə əlavə edin. 2) Sifariş səhifəsində məlumatlarınızı yazın. 3) Hazır sifariş mesajını Instagram və ya TikTok-da göndərin — brend sifarişi təsdiqləyir.', '1) Выберите размер и добавьте в корзину. 2) Откройте оформление и укажите данные. 3) Отправьте готовое сообщение в Instagram или TikTok — бренд подтвердит заказ.'), actions: [{ label: tt('hero.cta'), to: '/shop' }, { label: tt('cart.checkout'), to: '/checkout' }] }
+    return { text: L(lang, '1) Pick a size and add to cart. 2) Open checkout, enter your delivery details and choose how to pay. 3) Place the order — you get an order number and the brand contacts you to confirm delivery.', '1) Ölçünü seçib səbətə əlavə edin. 2) Sifariş səhifəsində çatdırılma məlumatlarını yazıb ödəniş üsulunu seçin. 3) Sifarişi verin — sizə sifariş nömrəsi verilir və brend çatdırılmanı təsdiqləmək üçün əlaqə saxlayır.', '1) Выберите размер и добавьте в корзину. 2) На странице оформления укажите данные и выберите способ оплаты. 3) Оформите заказ — вы получите номер заказа, а бренд свяжется с вами для подтверждения доставки.'), actions: [{ label: tt('hero.cta'), href: '/shop' }, { label: tt('cart.checkout'), href: '/checkout' }] }
 
   if (any(t, ['elaqe', 'contact', 'instagram', 'tiktok', 'telefon', 'phone', 'email', 'unvan', 'address', 'контакт', 'связ', 'телефон', 'адрес']))
-    return { text: L(lang, `You can reach HALHALA on ${channels}${site.email ? `, or by email at ${site.email}` : ''}.`, `HALHALA ilə ${channels} üzərindən${site.email ? `, və ya ${site.email} ünvanı ilə` : ''} əlaqə saxlaya bilərsiniz.`, `Связаться с HALHALA можно в ${channels}${site.email ? `, или по e-mail ${site.email}` : ''}.`), actions: [handoff, { label: tt('nav.contact'), to: '/contact' }] }
+    return { text: L(lang, `You can reach HALHALA on ${channels}${site.email ? `, or by email at ${site.email}` : ''}.`, `HALHALA ilə ${channels} üzərindən${site.email ? `, və ya ${site.email} ünvanı ilə` : ''} əlaqə saxlaya bilərsiniz.`, `Связаться с HALHALA можно в ${channels}${site.email ? `, или по e-mail ${site.email}` : ''}.`), actions: [handoff, { label: tt('nav.contact'), href: '/contact' }] }
 
   if (any(t, ['endirim', 'discount', 'sale', 'promo', 'kampaniya', 'скидк', 'акци']))
     return { text: L(lang, 'No promotions are listed on the site right now. Ask the team about current offers.', 'Hazırda saytda kampaniya yoxdur. Aktual təkliflər üçün komandadan soruşun.', 'Сейчас на сайте нет акций. О текущих предложениях спросите команду.'), actions: [handoff] }
 
-  const p = matchProduct(t)
+  const p = matchProduct(t, products)
   if (p) {
     const desc = tt(prodKey(p.id))
     const wanted = sizeOf(t)
@@ -125,7 +120,7 @@ export function reply(input: string, ctx: Ctx, lang: Lang): BotReply {
   }
 
   if (any(t, ['olcu', 'size', 'beden', 'размер']))
-    return { text: L(lang, 'Cuts are oversized. Each product page shows which sizes are in stock. Tell me a product name and I will check.', 'Kəsimlər oversized-dır. Hər məhsul səhifəsində mövcud ölçülər göstərilir. Məhsulun adını yazın, yoxlayım.', 'Крой оверсайз. На странице каждого товара видно, какие размеры есть в наличии. Назовите товар — проверю.'), actions: [{ label: tt('nav.shop'), to: '/shop' }] }
+    return { text: L(lang, 'Cuts are oversized. Each product page shows which sizes are in stock. Tell me a product name and I will check.', 'Kəsimlər oversized-dır. Hər məhsul səhifəsində mövcud ölçülər göstərilir. Məhsulun adını yazın, yoxlayım.', 'Крой оверсайз. На странице каждого товара видно, какие размеры есть в наличии. Назовите товар — проверю.'), actions: [{ label: tt('nav.shop'), href: '/shop' }] }
 
   if (any(t, ['thanks', 'thank', 'sagol', 'tesekkur', 'eyvallah', 'спасибо', 'благодар']))
     return { text: L(lang, 'Anytime! 🐐', 'Buyurun! 🐐', 'Всегда пожалуйста! 🐐') }

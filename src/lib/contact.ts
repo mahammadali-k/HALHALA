@@ -1,5 +1,5 @@
-import { site } from '../data/site'
-import type { TFn } from '../i18n'
+import { site } from '@/data/site'
+import type { TFn } from '@/i18n'
 
 export type ChannelId = 'instagram' | 'tiktok'
 export interface Channel { id: ChannelId; label: string; url: string }

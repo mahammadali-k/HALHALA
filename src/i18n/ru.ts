@@ -1,4 +1,4 @@
-import type { Key } from './en'
+import type { Key } from '@/i18n/en'
 
 export const ru: Record<Key, string> = {
   'meta.title': 'HALHALA — Горный козёл на вершине',
@@ -316,4 +316,22 @@ export const ru: Record<Key, string> = {
   "prod.p6.desc": "Чёрная оверсайз футболка с козлом на фиолетовом спорткаре.",
   "prod.p7.desc": "Чёрная оверсайз футболка с крупным портретом козла с цепью.",
   "prod.p8.desc": "Чёрная оверсайз футболка с козлом и фиолетовыми молниями.",
+  "meta.description": "HALHALA — премиальный тёмный стритвир из Азербайджана. Чёрные оверсайз футболки с принтами. Горный козёл на вершине.",
+  "hero.lead": "Стритвир для тех, кто не следует за толпой, а создаёт.",
+  "hero.coll": "Коллекция {a} / {b}",
+  "tag.home": "Главная",
+  "tag.collection": "Коллекция",
+  "tag.product": "Товар",
+  "tag.about": "О бренде",
+  "tag.contact": "Контакты",
+  "tag.account": "Аккаунт",
+  "tag.cart": "Корзина",
+  "tag.checkout": "Оформление",
+  "tag.info": "Доставка и возврат",
+  "tag.admin": "Админ",
+  "tag.order": "Заказ",
+  "tag.est": "Основано в {year}",
+  "sec.our": "Наша коллекция",
+  "err.boundary.t": "Что-то пошло не так",
+  "err.boundary.retry": "Повторить",
 }

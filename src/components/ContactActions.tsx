@@ -1,7 +1,8 @@
+'use client'
 import { useState } from 'react'
-import { useI18n } from '../i18n'
-import { dmChannels, sendVia, type Channel } from '../lib/contact'
-import { Button } from './Button'
+import { useI18n } from '@/i18n'
+import { dmChannels, sendVia, type Channel } from '@/lib/contact'
+import { Button } from '@/components/ui/Button'
 
 interface Props {
   /** Pre-written message that is copied to the clipboard when a channel opens. */

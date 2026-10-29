@@ -1,7 +1,8 @@
+'use client'
 import type { ReactNode } from 'react'
-import { useI18n, type Key } from '../i18n'
-import type { Order } from '../lib/api'
-import { formatPrice } from '../lib/format'
+import { useI18n, type Key } from '@/i18n'
+import type { Order } from '@/types/api'
+import { formatPrice } from '@/lib/format'
 
 const badge: Record<Order['status'], string> = {
   new: 'border-accent/60 text-accent', confirmed: 'border-violet-hi text-fg', shipped: 'border-muted text-fg',

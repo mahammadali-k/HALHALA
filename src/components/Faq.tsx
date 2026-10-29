@@ -1,17 +1,17 @@
-import { useCatalog } from '../context/CatalogContext'
-import { site } from '../data/site'
-import { useI18n, type Key } from '../i18n'
+'use client'
+import { useCatalog } from '@/context/CatalogContext'
+import { site } from '@/data/site'
+import { useI18n, type Key } from '@/i18n'
 
 const items = [1, 2, 3, 4, 5] as const
 
 export function Faq() {
   const { t } = useI18n()
-  const { backend, config } = useCatalog()
-  const online = backend === 'on'
+  const { config } = useCatalog()
   const answer = (n: number) =>
     n === 4 && site.deliveryPolicy ? site.deliveryPolicy
-    : n === 1 && online ? t('faq.1.a.online')
-    : n === 2 && online ? t(config?.payments.includes('card') ? 'faq.2.a.card' : 'faq.2.a.cod')
+    : n === 1 ? t('faq.1.a.online')
+    : n === 2 ? t(config.payments.includes('card') ? 'faq.2.a.card' : 'faq.2.a.cod')
     : t(`faq.${n}.a` as Key)
   return (
     <div className="divide-y divide-line border-y border-line">

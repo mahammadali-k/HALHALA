@@ -7,14 +7,14 @@ primary_region = "fra"
 
 [env]
   DATA_DIR = "/data"
-  PORT = "8787"
+  PORT = "3000"
 
 [mounts]
   source = "halhala_data"
   destination = "/data"
 
 [http_service]
-  internal_port = 8787
+  internal_port = 3000
   force_https = true
   auto_stop_machines = "off"
   min_machines_running = 1

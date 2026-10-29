@@ -1,4 +1,4 @@
-import type { Key } from './en'
+import type { Key } from '@/i18n/en'
 
 export const az: Record<Key, string> = {
   'meta.title': 'HALHALA — Dağ keçisi ucadadır',
@@ -316,4 +316,22 @@ export const az: Record<Key, string> = {
   "prod.p6.desc": "Bənövşəyi idman avtomobilinin üstündə keçi çəkilmiş oversize qara köynək.",
   "prod.p7.desc": "Zəncirli keçinin yaxın plan portreti çəkilmiş oversize qara köynək.",
   "prod.p8.desc": "Bənövşəyi ildırımlı keçi çəkilmiş oversize qara köynək.",
+  "meta.description": "HALHALA — Azərbaycandan premium tünd streetwear. Oversize qara qrafik köynəklər. Dağ keçisi ucadadır.",
+  "hero.lead": "İzləməyənlər üçün yox, yaradanlar üçün streetwear.",
+  "hero.coll": "Kolleksiya {a} / {b}",
+  "tag.home": "Ana səhifə",
+  "tag.collection": "Kolleksiya",
+  "tag.product": "Məhsul",
+  "tag.about": "Haqqımızda",
+  "tag.contact": "Əlaqə",
+  "tag.account": "Hesab",
+  "tag.cart": "Səbət",
+  "tag.checkout": "Sifariş",
+  "tag.info": "Çatdırılma və qaytarma",
+  "tag.admin": "Admin",
+  "tag.order": "Sifariş",
+  "tag.est": "Təsis: {year}",
+  "sec.our": "Kolleksiyamız",
+  "err.boundary.t": "Xəta baş verdi",
+  "err.boundary.retry": "Yenidən cəhd et",
 }
