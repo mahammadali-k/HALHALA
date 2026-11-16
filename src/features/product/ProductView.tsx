@@ -65,7 +65,7 @@ function ProductDetails({ product }: { product: Product }) {
         <Link href="/shop" className="hover:text-fg">{t('p.breadcrumb')}</Link> / <span className="text-fg">{product.name}</span>
       </nav>
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-        <ProductGallery images={product.images} spin={product.spin} />
+        <ProductGallery images={product.images} />
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="eyebrow">{t(catKey(product.category))}</p>
           <h1 className="display mt-3 text-h2">{product.name}</h1>

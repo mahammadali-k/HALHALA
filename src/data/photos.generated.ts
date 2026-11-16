@@ -74,7 +74,7 @@ export const photoMeta = {
   "tee-ferrari": {
     "width": 1280,
     "height": 1600,
-    "blur": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAADwAQCdASoMAA8ABABoJZQAAudnPoTY9gAA/vLIN92i3YoRAD6RAP3QAAA="
+    "blur": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAADwAQCdASoMAA8ABABoJZQAAudnPnVaUoAA/vLIN92i3YoQIwiAP3QAAAA="
   },
   "tee-bmw-classic": {
     "width": 1254,
