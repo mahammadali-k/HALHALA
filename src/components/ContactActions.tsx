@@ -20,7 +20,7 @@ export function ContactActions({ message, variant = 'accent', className = '' }: 
   const [status, setStatus] = useState<string | null>(null)
   const go = async (c: Channel) => {
     const r = await sendVia(c, message)
-    setStatus(r === 'copied' ? t('ca.copied', { channel: c.label }) : t('ca.manual', { channel: c.label, message }))
+    setStatus(r === 'prefilled' ? t('ca.prefilled', { channel: c.label }) : r === 'copied' ? t('ca.copied', { channel: c.label }) : t('ca.manual', { channel: c.label, message }))
   }
   return (
     <div className={className}>

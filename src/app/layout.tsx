@@ -8,7 +8,6 @@ import { Header } from '@/components/layout/Header'
 import { getSessionUser } from '@/server/auth'
 import { liveCatalog, publicConfig } from '@/server/catalog'
 import { getStore } from '@/server/settings'
-import { cookies } from 'next/headers'
 import { getLang, getT } from '@/i18n/server'
 import { Providers } from './providers'
 import './globals.css'
@@ -36,8 +35,8 @@ export const viewport: Viewport = { themeColor: '#09070d', width: 'device-width'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Everything the client needs to render correctly on the very first paint.
-  const [lang, user, jar] = await Promise.all([getLang(), getSessionUser(), cookies()])
-  const theme = jar.get('theme')?.value === 'light' ? 'light' : 'dark'
+  const [lang, user] = await Promise.all([getLang(), getSessionUser()])
+  const theme = 'dark' // brand book: black + purple + white text — one theme only
   return (
     <html lang={lang} data-theme={theme} className={`${inter.variable} ${montserrat.variable} ${jetbrains.variable} ${pirata.variable}`}>
       <body>

@@ -36,7 +36,7 @@ export function ContactView() {
 
         <div>
           <dl className="border-t border-line">
-            {channels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={accentLink} href={c.id === 'instagram' ? instagramUrl(store) : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${store.instagramHandle}` : t('ct.open')}</a></dd></div>)}
+            {channels.map((c) => <div key={c.id} className={row}><dt className="text-muted">{t('ct.profile', { channel: c.label })}</dt><dd><a className={accentLink} href={c.id === 'instagram' ? instagramUrl(store) : c.url} target="_blank" rel="noreferrer">{c.id === 'instagram' ? `@${store.instagramHandle}` : c.id === 'whatsapp' ? `+${store.whatsapp}` : t('ct.open')}</a></dd></div>)}
             {store.email && <div className={row}><dt className="text-muted">{t('ct.email')}</dt><dd><a href={`mailto:${store.email}`}>{store.email}</a></dd></div>}
             {store.phone && <div className={row}><dt className="text-muted">{t('ct.phone')}</dt><dd><a href={`tel:${store.phone}`}>{store.phone}</a></dd></div>}
             {store.address && <div className={row}><dt className="text-muted">{t('ct.address')}</dt><dd>{store.address}</dd></div>}

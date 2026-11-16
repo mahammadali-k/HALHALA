@@ -10,7 +10,6 @@ import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { useI18n } from '@/i18n'
 import { LangSwitch } from './LangSwitch'
-import { ThemeToggle } from './ThemeToggle'
 import { DesktopNav, MobileNav } from './NavMenu'
 import { Wordmark } from './Wordmark'
 
@@ -38,12 +37,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:bg-accent focus:px-3 focus:py-2 focus:text-ink">{t('skip')}</a>
+      <div className="container-x flex justify-end border-b border-line py-1.5 sm:hidden"><LangSwitch /></div>
       <div className="container-x grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 md:h-[3.75rem] lg:gap-6">
         <Link href="/" aria-label="HALHALA — home" className="shrink-0"><Wordmark /></Link>
         <div className="flex justify-center"><DesktopNav /></div>
         <div className="flex items-center gap-0.5">
           <LangSwitch className="mr-2 hidden sm:flex" />
-          <ThemeToggle />
           <Link href={user ? '/account' : '/login'} className={iconBtn} aria-label={user ? `${t('acc.aria')}: ${user.name}` : t('acc.login')}>
             <UserIcon />
             {user && <span aria-hidden className="absolute right-1 top-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />}
@@ -73,7 +72,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="right" footer={<div className="flex items-center gap-3"><LangSwitch className="w-fit" /><ThemeToggle /></div>}>
+      <Drawer open={menu} onClose={() => setMenu(false)} title={t('menu.title')} side="right" footer={<div className="flex items-center gap-3"><LangSwitch className="w-fit" /></div>}>
         <MobileNav onNavigate={() => setMenu(false)} />
       </Drawer>
     </header>

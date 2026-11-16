@@ -8,6 +8,22 @@ import { site } from '@/data/site'
 import { useI18n } from '@/i18n'
 import { instagramUrl } from '@/lib/store'
 import { Wordmark } from './Wordmark'
+import { ButtonLink } from '@/components/ui/Button'
+import { whatsappUrl } from '@/lib/store'
+
+const SocialLink = ({ href, name, children }: { href: string; name: string; children: React.ReactNode }) => {
+  const { t } = useI18n()
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={t('social.aria', { name })} title={name}
+      className="grid h-12 w-12 place-items-center border border-line text-fg transition-colors hover:border-violet hover:bg-violet/30">{children}</a>
+  )
+}
+const InstagramLogo = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none" /></svg>
+)
+const TikTokLogo = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M16.6 3c.3 2.4 1.7 3.9 4 4.1v3a7.4 7.4 0 0 1-4-1.2v6.2a6 6 0 1 1-6-6c.3 0 .6 0 .9.1v3.2a2.9 2.9 0 1 0 2 2.7V3h3.1Z" /></svg>
+)
 
 function Column({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -66,6 +82,16 @@ export function Footer() {
         </div>
       </div>
 
+      <div className="border-b border-line bg-card">
+        <div className="container-x flex flex-col items-center gap-5 py-10 text-center">
+          <h2 className="display text-h2">{t('create.title')}</h2>
+          <p className="max-w-md text-muted">{t('create.text')}</p>
+          {store.whatsapp && (
+            <ButtonLink href={`${whatsappUrl(store)}?text=${encodeURIComponent(t('msg.create'))}`} target="_blank" rel="noopener noreferrer" className="!px-9 !py-4">{t('create.cta')}</ButtonLink>
+          )}
+        </div>
+      </div>
+
       <div className="container-x grid gap-10 pb-14 pt-12 sm:grid-cols-2 lg:grid-cols-4">
         <Column title={t('footer.shop')}>{shopLinks.map((l) => <li key={l.to}><Link className={mutedLink} href={l.to}>{t(l.label)}</Link></li>)}</Column>
         <Column title={t('footer.help')}>
@@ -86,6 +112,10 @@ export function Footer() {
           <li><a className={mutedLink} href={instagramUrl(store)} target="_blank" rel="noreferrer">Instagram · @{store.instagramHandle}</a></li>
           {store.tiktokUrl && <li><a className={mutedLink} href={store.tiktokUrl} target="_blank" rel="noreferrer">TikTok</a></li>}
         </Column>
+      </div>
+      <div className="flex justify-center gap-4 border-t border-line py-8">
+        <SocialLink href={instagramUrl(store)} name="Instagram"><InstagramLogo /></SocialLink>
+        {store.tiktokUrl && <SocialLink href={store.tiktokUrl} name="TikTok"><TikTokLogo /></SocialLink>}
       </div>
       <div className="border-t border-line py-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted">{t('footer.rights', { year: YEAR, name: site.name })}</div>
     </footer>

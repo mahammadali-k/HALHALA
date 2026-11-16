@@ -1,7 +1,7 @@
 import type { Key } from '@/i18n/en'
 
 export const ru: Record<Key, string> = {
-  'meta.title': 'HALHALA — Горный козёл на вершине',
+  'meta.title': 'HALHALA — Горный козёл на высоте',
   skip: 'Перейти к содержимому',
   'lang.label': 'Язык',
 
@@ -24,7 +24,7 @@ export const ru: Record<Key, string> = {
 
   'common.viewAll': 'Смотреть все',
 
-  'hero.eyebrow': 'Новая коллекция', 'hero.title1': 'Горный козёл', 'hero.title2': 'на вершине',
+  'hero.eyebrow': 'Новая коллекция', 'hero.title1': 'Горный козёл', 'hero.title2': 'на высоте',
   'hero.sub': 'Чёрные оверсайз футболки с принтами — созданы для города, вдохновлены горами.',
   'hero.cta': 'Смотреть коллекцию', 'hero.story': 'Наша история',
 
@@ -122,7 +122,7 @@ export const ru: Record<Key, string> = {
   'ord.intro': 'Здравствуйте, HALHALA! Хочу сделать заказ:', 'ord.total': 'Сумма товаров: {total} (доставка не включена)',
   'ord.name': 'Имя', 'ord.phone': 'Телефон', 'ord.email': 'E-mail', 'ord.city': 'Город', 'ord.address': 'Адрес', 'ord.notes': 'Комментарий',
 
-  'about.eyebrow': 'О бренде', 'about.t1': 'Горный козёл', 'about.t2': 'на вершине.',
+  'about.eyebrow': 'О бренде', 'about.t1': 'Горный козёл', 'about.t2': 'на высоте.',
   'about.lead': 'HALHALA — тёмный стритвир-бренд из Азербайджана. Наш горный козёл — это инстинкт подниматься, твёрдо стоять на ногах и идти в своём темпе.',
   'about.values': 'На чём мы стоим',
   'about.v1.t': 'Корни', 'about.v1.d': 'Сделано в Азербайджане и для Азербайджана — горы здесь не фон, а точка отсчёта.',
@@ -286,7 +286,7 @@ export const ru: Record<Key, string> = {
   "hero.tag1": "Больше, чем одежда",
   "hero.tag2": "Это характер",
   "hero.shop": "Купить",
-  "footer.slogan": "Горный козёл снова на вершине.",
+  "footer.slogan": "Горный козёл на высоте.",
   "perk.cotton": "100% хлопок",
   "perk.delivery": "Бесплатная доставка",
   "perk.delivery.sub": "(Баку)",
@@ -302,7 +302,7 @@ export const ru: Record<Key, string> = {
   "p.spin.left": "Повернуть влево",
   "p.spin.right": "Повернуть вправо",
   "p.view.photo": "Фото {i}",
-  "meta.description": "HALHALA — премиальный тёмный стритвир из Азербайджана. Чёрные оверсайз футболки с принтами. Горный козёл на вершине.",
+  "meta.description": "HALHALA — премиальный тёмный стритвир из Азербайджана. Чёрные оверсайз футболки с принтами. Горный козёл на высоте.",
   "hero.lead": "Стритвир для тех, кто не следует за толпой, а создаёт.",
   "hero.coll": "Коллекция {a} / {b}",
   "tag.home": "Главная",
@@ -375,5 +375,19 @@ export const ru: Record<Key, string> = {
   "err.has_orders": "У товара есть заказы, удалить нельзя. Скройте его.",
   "err.unsupported_image": "Формат изображения не поддерживается. Используйте JPG, PNG, WebP или AVIF.",
   "theme.toggle": "Переключить ночной / дневной режим",
+  "ca.prefilled": "{channel} открыт с готовым сообщением — просто нажмите «Отправить».",
+  "ad.settings.whatsapp": "Номер WhatsApp",
   "err.boundary.retry": "Повторить",
+  "hero.motto": "Горный козёл на высоте",
+  "p.order": "Заказать",
+  "p.order.hint": "Заказ придёт прямо к нам в WhatsApp.",
+  "p.pickSize": "Сначала выберите размер.",
+  "p.material": "Материал",
+  "p.details": "Информация",
+  "msg.order": "Здравствуйте, хочу заказать «{name}» — размер {size}, {qty} шт.",
+  "create.cta": "Создай свой KECHI",
+  "create.title": "Есть своя идея?",
+  "create.text": "Напишите, что хотите на своём KECHI — сделаем вместе.",
+  "msg.create": "Здравствуйте, хочу создать свой KECHI.",
+  "social.aria": "Подписывайтесь на HALHALA в {name}",
 }

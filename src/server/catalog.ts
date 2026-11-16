@@ -8,7 +8,7 @@ import { getStore } from './settings'
 export const toQepik = (azn: number) => Math.round(azn * 100)
 export const toAzn = (qepik: number) => qepik / 100
 
-interface ProductDbRow { id: string; slug: string; name: string; category: string; price_q: number; best_seller: number; active: number; desc_en: string; desc_az: string; desc_ru: string; created_at: string }
+interface ProductDbRow { id: string; slug: string; name: string; category: string; price_q: number; best_seller: number; active: number; desc_en: string; desc_az: string; desc_ru: string; mat_en: string; mat_az: string; mat_ru: string; created_at: string }
 interface ImageDbRow { id: number; product_id: string; base: string; width: number; height: number; blur: string; alt: string }
 
 /** Products with their photos and live stock. Storefront = active only; admin passes { all: true }. */
@@ -23,6 +23,7 @@ export function listProducts(opts: { all?: boolean } = {}): Product[] {
   return rows.map((r): Product => ({
     id: r.id, slug: r.slug, name: r.name, category: r.category as Category, price: toAzn(r.price_q),
     description: { en: r.desc_en, az: r.desc_az, ru: r.desc_ru } satisfies Described,
+    material: { en: r.mat_en, az: r.mat_az, ru: r.mat_ru } satisfies Described,
     images: (images.get(r.id) ?? []).map((i) => ({ ...i, alt: i.alt || r.name, label: i.alt || r.name })),
     stock: stock.get(r.id) ?? {}, bestSeller: r.best_seller === 1, active: r.active === 1, createdAt: r.created_at,
   }))

@@ -12,14 +12,14 @@
   /* Violet-on-black palette (HALHALA concept): near-black surfaces, one purple accent */
   --color-ink: #09070d;
   --color-ink-2: #100b18;
-  --color-card: #150f20;
+  --color-card: #170f26;
   --color-violet: #5a30b0;       /* primary button fill */
   --color-violet-hi: #6c42c8;
-  --color-accent: #b48cff;       /* accent text / borders */
+  --color-accent: #ffffff;       /* accent text / borders — brand book: all text is white */
   --color-accent-deep: #8a5fe0;  /* hover & pressed states (darker than accent) */
-  --color-fg: #f4f1f8;
-  --color-muted: #a69fb4;
-  --color-line: #281f38;
+  --color-fg: #ffffff;
+  --color-muted: rgb(255 255 255 / 0.8);   /* still white — only softened for hierarchy */
+  --color-line: #33244d;
   --color-danger: #f08a9a;
   --color-on-violet: #ffffff;    /* text on violet fills — the same in both themes */
 }

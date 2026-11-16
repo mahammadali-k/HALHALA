@@ -2,10 +2,15 @@ import type { TFn } from '@/i18n'
 import type { Channel } from './store'
 
 /**
- * Neither platform lets a website pre-fill a DM, so: copy the prepared message to the clipboard
- * and open the chat. The user pastes and sends. Must be called from a click handler.
+ * WhatsApp opens the chat with the message already typed (`?text=`). Instagram and TikTok cannot pre-fill a DM, so
+ * for them: copy the prepared message to the clipboard and open the chat — the user pastes and sends.
+ * Must be called from a click handler.
  */
-export async function sendVia(channel: Channel, message: string): Promise<'copied' | 'manual'> {
+export async function sendVia(channel: Channel, message: string): Promise<'prefilled' | 'copied' | 'manual'> {
+  if (channel.id === 'whatsapp') {
+    window.open(`${channel.url}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    return 'prefilled'
+  }
   window.open(channel.url, '_blank', 'noopener,noreferrer')
   try {
     await navigator.clipboard.writeText(message)

@@ -19,7 +19,7 @@ export function buildContext(lang: Lang, cart: { count: number; total: number },
     cart: { items: cart.count, totalAZN: cart.total },
     shop: { online: true, payments },
     brand: {
-      instagram: instagramUrl(store), tiktok: store.tiktokUrl, email: store.email, phone: store.phone, address: store.address,
+      instagram: instagramUrl(store), tiktok: store.tiktokUrl, whatsapp: store.whatsapp ? `+${store.whatsapp}` : null, email: store.email, phone: store.phone, address: store.address,
       deliveryPolicy: policyText(store, 'delivery', lang) || null, returnsPolicy: policyText(store, 'returns', lang) || null,
     },
   }

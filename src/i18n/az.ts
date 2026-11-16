@@ -1,7 +1,7 @@
 import type { Key } from '@/i18n/en'
 
 export const az: Record<Key, string> = {
-  'meta.title': 'HALHALA — Dağ keçisi ucadadır',
+  'meta.title': 'HALHALA — Dağ keçisi yüksəklikdə',
   skip: 'Məzmuna keç',
   'lang.label': 'Dil',
 
@@ -24,7 +24,7 @@ export const az: Record<Key, string> = {
 
   'common.viewAll': 'Hamısına bax',
 
-  'hero.eyebrow': 'Yeni kolleksiya', 'hero.title1': 'Dağ keçisi', 'hero.title2': 'ucadadır',
+  'hero.eyebrow': 'Yeni kolleksiya', 'hero.title1': 'Dağ keçisi', 'hero.title2': 'yüksəklikdə',
   'hero.sub': 'Şəhər üçün yaradılmış, dağdan ilhamlanmış oversize qara qrafik köynəklər.',
   'hero.cta': 'Kolleksiyaya bax', 'hero.story': 'Hekayəmiz',
 
@@ -122,7 +122,7 @@ export const az: Record<Key, string> = {
   'ord.intro': 'Salam HALHALA, sifariş vermək istəyirəm:', 'ord.total': 'Məhsulların cəmi: {total} (çatdırılma daxil deyil)',
   'ord.name': 'Ad', 'ord.phone': 'Telefon', 'ord.email': 'E-poçt', 'ord.city': 'Şəhər', 'ord.address': 'Ünvan', 'ord.notes': 'Qeydlər',
 
-  'about.eyebrow': 'Haqqımızda', 'about.t1': 'Dağ keçisi', 'about.t2': 'ucadadır.',
+  'about.eyebrow': 'Haqqımızda', 'about.t1': 'Dağ keçisi', 'about.t2': 'yüksəklikdə.',
   'about.lead': 'HALHALA Azərbaycandan olan tünd streetwear brendidir. Dağ keçimiz dırmanmaq instinktini, möhkəm addımlamağı və öz tempini saxlamağı simvolizə edir.',
   'about.values': 'Nəyə söykənirik',
   'about.v1.t': 'Köklü', 'about.v1.d': 'Azərbaycanda və Azərbaycan üçün — dağlar fon deyil, istinad nöqtəsidir.',
@@ -286,7 +286,7 @@ export const az: Record<Key, string> = {
   "hero.tag1": "Geyimdən daha çox",
   "hero.tag2": "Bu bir xarakterdir",
   "hero.shop": "İndi al",
-  "footer.slogan": "Dağ keçisi yenə zirvədədir.",
+  "footer.slogan": "Dağ keçisi yüksəklikdə.",
   "perk.cotton": "100% pambıq",
   "perk.delivery": "Pulsuz çatdırılma",
   "perk.delivery.sub": "(Bakı)",
@@ -302,7 +302,7 @@ export const az: Record<Key, string> = {
   "p.spin.left": "Sola fırlat",
   "p.spin.right": "Sağa fırlat",
   "p.view.photo": "Foto {i}",
-  "meta.description": "HALHALA — Azərbaycandan premium tünd streetwear. Oversize qara qrafik köynəklər. Dağ keçisi ucadadır.",
+  "meta.description": "HALHALA — Azərbaycandan premium tünd streetwear. Oversize qara qrafik köynəklər. Dağ keçisi yüksəklikdə.",
   "hero.lead": "İzləməyənlər üçün yox, yaradanlar üçün streetwear.",
   "hero.coll": "Kolleksiya {a} / {b}",
   "tag.home": "Ana səhifə",
@@ -375,5 +375,19 @@ export const az: Record<Key, string> = {
   "err.has_orders": "Bu məhsul üzrə sifariş var, silmək olmaz. Əvəzinə gizlədin.",
   "err.unsupported_image": "Şəkil formatı dəstəklənmir. JPG, PNG, WebP və ya AVIF istifadə edin.",
   "theme.toggle": "Gecə / səhər rejimini dəyiş",
+  "ca.prefilled": "{channel} mesajınız yazılmış halda açıldı — sadəcə göndər düyməsinə basın.",
+  "ad.settings.whatsapp": "WhatsApp nömrəsi",
   "err.boundary.retry": "Yenidən cəhd et",
+  "hero.motto": "Dağ keçisi yüksəklikdə",
+  "p.order": "Sifariş et",
+  "p.order.hint": "Sifarişiniz birbaşa bizim WhatsApp-a göndərilir.",
+  "p.pickSize": "Əvvəlcə ölçünü seçin.",
+  "p.material": "Material",
+  "p.details": "Məlumat",
+  "msg.order": "Salam, \"{name}\" sifariş etmək istəyirəm — ölçü {size}, {qty} ədəd.",
+  "create.cta": "Öz KECHI-ni yarat",
+  "create.title": "Öz ideyan var?",
+  "create.text": "KECHI-nin üzərində nə istədiyini yaz — birlikdə hazırlayaq.",
+  "msg.create": "Salam, öz KECHI-mi yaratmaq istəyirəm.",
+  "social.aria": "HALHALA-nı {name} üzərindən izləyin",
 }

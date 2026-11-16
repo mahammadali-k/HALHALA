@@ -14,6 +14,7 @@ import { catKey, useI18n, type Key } from '@/i18n'
 import { describe, isSoldOut, related, stockFor, totalStock } from '@/lib/catalog'
 import { productInquiry } from '@/lib/contact'
 import { formatPrice } from '@/lib/format'
+import { pickText, whatsappUrl } from '@/lib/store'
 import type { Product, Size } from '@/types'
 
 const careKeys: Key[] = ['care.1', 'care.2', 'care.3', 'care.4']
@@ -42,6 +43,15 @@ function ProductDetails({ product }: { product: Product }) {
   const remaining = size ? stockFor(product, size) - inCart : 0
   const total = totalStock(product)
 
+  const material = pickText(product.material, lang)
+
+  /** "Sifariş et": opens the owner's WhatsApp with the order already typed. */
+  const order = () => {
+    if (!size) return setSizeError(true)
+    const text = t('msg.order', { name: product.name, size, qty })
+    window.open(`${whatsappUrl(store)}?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+  }
+
   const submit = () => {
     if (!size) return setSizeError(true)
     if (remaining <= 0) return
@@ -60,11 +70,15 @@ function ProductDetails({ product }: { product: Product }) {
           <p className="eyebrow">{t(catKey(product.category))}</p>
           <h1 className="display mt-3 text-h2">{product.name}</h1>
           <p className="mt-4 text-xl tabular-nums">{formatPrice(product.price)}</p>
-          <p className="mt-6 max-w-md leading-relaxed text-muted">{describe(product, lang)}</p>
-
-          <p className={`mt-6 text-sm ${sold ? 'text-danger' : total <= 5 ? 'text-accent' : 'text-muted'}`}>
+          <p className={`mt-3 text-sm ${sold ? 'text-danger' : total <= 5 ? 'text-fg' : 'text-muted'}`}>
             {sold ? t('p.sold') : total <= 5 ? t('p.low', { n: total }) : t('p.in')}
           </p>
+          <p className="mt-6 max-w-md leading-relaxed text-muted">{describe(product, lang)}</p>
+          {material && (
+            <dl className="mt-5 max-w-md border-y border-line py-3 text-sm">
+              <div className="flex gap-4"><dt className="w-24 shrink-0 text-xs uppercase tracking-[0.2em] text-muted">{t('p.material')}</dt><dd>{material}</dd></div>
+            </dl>
+          )}
 
           {!sold && (
             <div className="mt-8 space-y-7">
@@ -74,7 +88,12 @@ function ProductDetails({ product }: { product: Product }) {
                 <QuantitySelector value={qty} max={Math.max(1, remaining)} onChange={setQty} />
                 {size && remaining <= 0 && <p className="mt-2 text-xs text-accent">{t('p.maxincart')}</p>}
               </div>
-              <Button className="w-full sm:w-auto sm:min-w-64" onClick={submit} disabled={!!size && remaining <= 0}>{t('p.add')}</Button>
+              {sizeError && !size && <p role="alert" className="text-xs text-fg">{t('p.pickSize')}</p>}
+              <div className="flex flex-col gap-3 sm:flex-row">
+                {store.whatsapp && <Button className="w-full sm:w-auto sm:min-w-56" onClick={order}>{t('p.order')}</Button>}
+                <Button variant="outline" className="w-full sm:w-auto sm:min-w-48" onClick={submit} disabled={!!size && remaining <= 0}>{t('p.add')}</Button>
+              </div>
+              {store.whatsapp && <p className="-mt-3 text-xs text-muted">{t('p.order.hint')}</p>}
             </div>
           )}
           {sold && <ButtonLink href="/shop" variant="outline" className="mt-8">{t('p.browse')}</ButtonLink>}

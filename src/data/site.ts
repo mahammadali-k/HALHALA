@@ -19,6 +19,7 @@ export const DEFAULT_STORE: StoreSettings = {
   address: '',
   instagramHandle: 'halhala.az',
   tiktokUrl: 'https://www.tiktok.com/@halhala.az',
+  whatsapp: '994506941805',
   est: '2024',
   deliveryFee: Number(process.env.DELIVERY_FEE_AZN) || 0,
   freeDeliveryFrom: process.env.FREE_DELIVERY_FROM_AZN ? Number(process.env.FREE_DELIVERY_FROM_AZN) : null,

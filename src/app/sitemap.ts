@@ -1,4 +1,7 @@
 import type { MetadataRoute } from 'next'
+
+// Read PUBLIC_URL and the live catalogue per request, not at build time (the Docker build has neither).
+export const dynamic = 'force-dynamic'
 import { listProducts } from '@/server/catalog'
 
 export default function sitemap(): MetadataRoute.Sitemap {

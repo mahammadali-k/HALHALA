@@ -41,6 +41,7 @@ function open(): DatabaseSync {
       price_q INTEGER NOT NULL CHECK (price_q > 0), -- qəpik
       best_seller INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1,
       desc_en TEXT NOT NULL DEFAULT '', desc_az TEXT NOT NULL DEFAULT '', desc_ru TEXT NOT NULL DEFAULT '',
+      mat_en TEXT NOT NULL DEFAULT '', mat_az TEXT NOT NULL DEFAULT '', mat_ru TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
     CREATE TABLE IF NOT EXISTS product_images (
@@ -69,6 +70,9 @@ function open(): DatabaseSync {
   // databases created before card payments existed
   const cols = (d.prepare('PRAGMA table_info(orders)').all() as { name: string }[]).map((c) => c.name)
   for (const col of ['access_token', 'payment_ref', 'paid_at']) if (!cols.includes(col)) d.exec(`ALTER TABLE orders ADD COLUMN ${col} TEXT`)
+  // databases created before the material field existed
+  const pcols = (d.prepare('PRAGMA table_info(products)').all() as { name: string }[]).map((c) => c.name)
+  for (const col of ['mat_en', 'mat_az', 'mat_ru']) if (!pcols.includes(col)) d.exec(`ALTER TABLE products ADD COLUMN ${col} TEXT NOT NULL DEFAULT ''`)
   seedCatalog(d)
   d.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now())
   return d

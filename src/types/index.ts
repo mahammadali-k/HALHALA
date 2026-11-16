@@ -33,6 +33,8 @@ export interface Product {
   /** Price in AZN, whole manats or decimals. */
   price: number
   description: Described
+  /** Fabric / composition text per language (shown next to the sizes). Empty = not published yet. */
+  material: Described
   images: ImageAsset[]
   /** Units in stock per size. A size that is listed is sellable; 0 = sold out. */
   stock: Partial<Record<Size, number>>

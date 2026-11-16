@@ -14,6 +14,8 @@ export interface StoreSettings {
   /** Instagram handle without @ — DM and profile links are derived from it. */
   instagramHandle: string
   tiktokUrl: string
+  /** WhatsApp number, digits only with country code (e.g. 994501234567). Empty = WhatsApp channel hidden. */
+  whatsapp: string
   /** Founding year shown as "Est. 2024". */
   est: string
   deliveryFee: number

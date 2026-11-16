@@ -22,11 +22,12 @@ export async function updateStore(req: NextRequest): Promise<StoreSettings> {
   const b = await readJson<Record<string, unknown>>(req, 200 * 1024)
   const cur = getStore()
   const email = clean(b.email, 254), phone = clean(b.phone, 30), handle = clean(b.instagramHandle, 30).replace(/^@/, '')
-  const tiktok = clean(b.tiktokUrl, 200), est = clean(b.est, 4)
+  const tiktok = clean(b.tiktokUrl, 200), whatsapp = clean(b.whatsapp, 30).replace(/[\s()+-]/g, ''), est = clean(b.est, 4)
   if (email && !isEmail(email)) throw new ApiError(400, 'invalid_input', { fields: { email: 'email' } })
   if (phone && !isPhone(phone)) throw new ApiError(400, 'invalid_input', { fields: { phone: 'phone' } })
   if (!/^[A-Za-z0-9._]{1,30}$/.test(handle)) throw new ApiError(400, 'invalid_input', { fields: { instagramHandle: 'handle' } })
   if (tiktok && !/^https:\/\/(www\.)?tiktok\.com\/[@\w./-]+$/i.test(tiktok)) throw new ApiError(400, 'invalid_input', { fields: { tiktokUrl: 'url' } })
+  if (whatsapp && !/^\d{9,15}$/.test(whatsapp)) throw new ApiError(400, 'invalid_input', { fields: { whatsapp: 'number' } })
   if (est && !/^\d{4}$/.test(est)) throw new ApiError(400, 'invalid_input', { fields: { est: 'year' } })
   const fee = Number(b.deliveryFee ?? cur.deliveryFee), free = b.freeDeliveryFrom === null || b.freeDeliveryFrom === '' ? null : Number(b.freeDeliveryFrom)
   if (!Number.isFinite(fee) || fee < 0 || fee > 1000 || (free !== null && (!Number.isFinite(free) || free < 0))) throw new ApiError(400, 'invalid_input', { fields: { deliveryFee: 'number' } })
@@ -34,7 +35,7 @@ export async function updateStore(req: NextRequest): Promise<StoreSettings> {
   const incoming = (b.policies ?? {}) as Record<string, Record<string, unknown>>
   const policies = Object.fromEntries(POLICY_KINDS.map((k) => [k, Object.fromEntries(LANGS.map((l) => [l, clean(incoming[k]?.[l], 20000)]))])) as StoreSettings['policies']
 
-  const next: StoreSettings = { email, phone, address: clean(b.address, 300), instagramHandle: handle, tiktokUrl: tiktok, est, deliveryFee: fee, freeDeliveryFrom: free, policies }
+  const next: StoreSettings = { email, phone, address: clean(b.address, 300), instagramHandle: handle, tiktokUrl: tiktok, whatsapp, est, deliveryFee: fee, freeDeliveryFrom: free, policies }
   run('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', KEY, JSON.stringify(next))
   return next
 }

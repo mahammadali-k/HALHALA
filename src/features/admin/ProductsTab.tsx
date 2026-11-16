@@ -12,16 +12,17 @@ import { CATEGORIES, SIZES, type Category, type LangId, type Product, type Size 
 
 const LANGS: LangId[] = ['az', 'ru', 'en']
 
-interface Draft { name: string; slug: string; category: Category; price: string; bestSeller: boolean; active: boolean; description: Record<LangId, string>; stock: Partial<Record<Size, string>> }
+interface Draft { name: string; slug: string; category: Category; price: string; bestSeller: boolean; active: boolean; description: Record<LangId, string>; material: Record<LangId, string>; stock: Partial<Record<Size, string>> }
 
-const blank = (): Draft => ({ name: '', slug: '', category: CATEGORIES[0], price: '', bestSeller: false, active: true, description: { az: '', ru: '', en: '' }, stock: { S: '0', M: '0', L: '0', XL: '0' } })
+const blank = (): Draft => ({ name: '', slug: '', category: CATEGORIES[0], price: '', bestSeller: false, active: true, description: { az: '', ru: '', en: '' }, material: { az: '', ru: '', en: '' }, stock: { S: '0', M: '0', L: '0', XL: '0' } })
 const toDraft = (p: Product): Draft => ({
   name: p.name, slug: p.slug, category: p.category, price: String(p.price), bestSeller: Boolean(p.bestSeller), active: p.active,
   description: { az: p.description.az ?? '', ru: p.description.ru ?? '', en: p.description.en ?? '' },
+  material: { az: p.material.az ?? '', ru: p.material.ru ?? '', en: p.material.en ?? '' },
   stock: Object.fromEntries(Object.entries(p.stock).map(([s, q]) => [s, String(q)])),
 })
 const payload = (d: Draft) => ({
-  name: d.name, slug: d.slug || undefined, category: d.category, price: Number(d.price), bestSeller: d.bestSeller, active: d.active, description: d.description,
+  name: d.name, slug: d.slug || undefined, category: d.category, price: Number(d.price), bestSeller: d.bestSeller, active: d.active, description: d.description, material: d.material,
   stock: Object.fromEntries(Object.entries(d.stock).map(([s, q]) => [s, Number(q)])),
 })
 const inputCls = 'field !py-2.5'
@@ -163,6 +164,11 @@ function ProductForm({ product, onClose, onSaved }: { product: Product | null; o
         {LANGS.map((l) => (
           <Field key={l} id={`pf-desc-${l}`} label={`${t('ad.products.desc')} · ${l.toUpperCase()}`}>
             <textarea id={`pf-desc-${l}`} rows={3} maxLength={2000} className="field" value={d.description[l]} onChange={(e) => set('description', { ...d.description, [l]: e.target.value })} />
+          </Field>
+        ))}
+        {LANGS.map((l) => (
+          <Field key={`m-${l}`} id={`pf-mat-${l}`} label={`${t('p.material')} · ${l.toUpperCase()}`}>
+            <textarea id={`pf-mat-${l}`} rows={2} maxLength={500} className="field" value={d.material[l]} onChange={(e) => set('material', { ...d.material, [l]: e.target.value })} />
           </Field>
         ))}
       </div>

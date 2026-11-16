@@ -12,9 +12,15 @@ export const photo = (name: PhotoName, alt: string, pos = 'center 30%'): ImageAs
  * The logo slot is for the OFFICIAL HALHALA logo file; until provided the header uses a plain text wordmark.
  */
 export const images = {
+  // Official logo: put the file at public/brand/logo.png (or .svg) and set src to '/brand/logo.png'.
   logo: { alt: 'HALHALA', label: 'LOGO' } as ImageAsset,
   /** Optional transparent cut-out for the hero (e.g. goat on the car). Provide a photo() via `npm run images` and it replaces the framed photo. */
   heroArt: undefined as ImageAsset | undefined,
+  /** The two model photos shown side by side in the hero (the only photos in that section). */
+  heroPair: [
+    photo('laundry-side', 'Model in the HALHALA goat tee, standing in a courtyard with laundry lines', 'center 28%'),
+    photo('wall-glasses-cam', 'Model in the HALHALA goat tee against a sunlit wall, looking up', 'center 30%'),
+  ],
   hero: photo('laundry-side', 'Model in the HALHALA goat tee, standing in a courtyard with laundry lines', 'center 28%'),
   heroSecondary: photo('carpet-blur', 'HALHALA goat tee in front of a red carpet, motion-blurred portrait', 'center 55%'),
   story: photo('carpet-motion', 'Model with eyes closed in motion blur in front of a red carpet', 'center 30%'),

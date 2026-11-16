@@ -28,7 +28,7 @@ export function SettingsTab() {
   if (!s) return <p className="text-muted">{error ?? t('acc.loading')}</p>
 
   const set = <K extends keyof StoreSettings>(k: K, v: StoreSettings[K]) => { setSaved(false); setS((x) => x && { ...x, [k]: v }) }
-  const text = (k: 'email' | 'phone' | 'address' | 'instagramHandle' | 'tiktokUrl' | 'est', label: Key, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
+  const text = (k: 'email' | 'phone' | 'address' | 'instagramHandle' | 'tiktokUrl' | 'whatsapp' | 'est', label: Key, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <Field id={`st-${k}`} label={t(label)} error={fields[k] ? t('err.invalid_input') : undefined}>
       <input id={`st-${k}`} className="field !py-2.5" value={s[k]} onChange={(e) => set(k, e.target.value)} {...props} />
     </Field>
@@ -54,6 +54,7 @@ export function SettingsTab() {
           <div className="sm:col-span-2">{text('address', 'ad.settings.address', { maxLength: 300 })}</div>
           {text('instagramHandle', 'ad.settings.instagram', { maxLength: 30, placeholder: 'halhala.az' })}
           {text('tiktokUrl', 'ad.settings.tiktok', { maxLength: 200, placeholder: 'https://www.tiktok.com/@halhala.az' })}
+          {text('whatsapp', 'ad.settings.whatsapp', { type: 'tel', maxLength: 30, placeholder: '+994501234567' })}
           {text('est', 'ad.settings.est', { maxLength: 4, inputMode: 'numeric' })}
         </div>
       </section>

@@ -35,13 +35,13 @@ function uniqueSlug(base: string, exceptId?: string) {
 
 interface ProductInput {
   name?: unknown; slug?: unknown; category?: unknown; price?: unknown; bestSeller?: unknown; active?: unknown
-  description?: Record<string, unknown>; stock?: Record<string, unknown>
+  description?: Record<string, unknown>; material?: Record<string, unknown>; stock?: Record<string, unknown>
 }
 
 /** Validates the (partial) product payload; `full` = create (name, category, price and at least one size are required). */
 function parse(b: ProductInput, full: boolean) {
   const fields: Record<string, string> = {}
-  const out: { name?: string; slug?: string; category?: Category; priceQ?: number; bestSeller?: boolean; active?: boolean; desc?: Record<'en' | 'az' | 'ru', string>; stock?: Partial<Record<Size, number>> } = {}
+  const out: { name?: string; slug?: string; category?: Category; priceQ?: number; bestSeller?: boolean; active?: boolean; desc?: Record<'en' | 'az' | 'ru', string>; mat?: Record<'en' | 'az' | 'ru', string>; stock?: Partial<Record<Size, number>> } = {}
   if (b.name !== undefined || full) { const n = clean(b.name, 80); if (n.length < 2) fields.name = 'name'; else out.name = n }
   if (b.slug !== undefined && clean(b.slug, 60)) { const s = slugify(clean(b.slug, 60)); out.slug = s }
   if (b.category !== undefined || full) { if (!CATEGORIES.includes(b.category as Category)) fields.category = 'category'; else out.category = b.category as Category }
@@ -49,6 +49,7 @@ function parse(b: ProductInput, full: boolean) {
   if (b.bestSeller !== undefined) out.bestSeller = Boolean(b.bestSeller)
   if (b.active !== undefined) out.active = Boolean(b.active)
   if (b.description) out.desc = { en: clean(b.description.en, 2000), az: clean(b.description.az, 2000), ru: clean(b.description.ru, 2000) }
+  if (b.material) out.mat = { en: clean(b.material.en, 500), az: clean(b.material.az, 500), ru: clean(b.material.ru, 500) }
   if (b.stock !== undefined || full) {
     const stock: Partial<Record<Size, number>> = {}
     for (const [size, q] of Object.entries(b.stock ?? {})) {
@@ -76,8 +77,8 @@ export async function createProduct(req: NextRequest): Promise<Product> {
   const v = parse(await readJson<ProductInput>(req), true)
   const id = `p${randomBytes(4).toString('hex')}`
   tx(() => {
-    run(`INSERT INTO products (id, slug, name, category, price_q, best_seller, active, desc_en, desc_az, desc_ru) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id, uniqueSlug(v.slug ?? slugify(v.name!)), v.name!, v.category!, v.priceQ!, v.bestSeller ? 1 : 0, v.active ? 1 : 0, v.desc?.en ?? '', v.desc?.az ?? '', v.desc?.ru ?? '')
+    run(`INSERT INTO products (id, slug, name, category, price_q, best_seller, active, desc_en, desc_az, desc_ru, mat_en, mat_az, mat_ru) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      id, uniqueSlug(v.slug ?? slugify(v.name!)), v.name!, v.category!, v.priceQ!, v.bestSeller ? 1 : 0, v.active ? 1 : 0, v.desc?.en ?? '', v.desc?.az ?? '', v.desc?.ru ?? '', v.mat?.en ?? '', v.mat?.az ?? '', v.mat?.ru ?? '')
     writeStock(id, v.stock!)
   })
   return mustFind(id)
@@ -95,6 +96,7 @@ export async function updateProduct(req: NextRequest, id: string): Promise<Produ
     if (v.bestSeller !== undefined) run('UPDATE products SET best_seller = ? WHERE id = ?', v.bestSeller ? 1 : 0, id)
     if (v.active !== undefined) run('UPDATE products SET active = ? WHERE id = ?', v.active ? 1 : 0, id)
     if (v.desc) run('UPDATE products SET desc_en = ?, desc_az = ?, desc_ru = ? WHERE id = ?', v.desc.en, v.desc.az, v.desc.ru, id)
+    if (v.mat) run('UPDATE products SET mat_en = ?, mat_az = ?, mat_ru = ? WHERE id = ?', v.mat.en, v.mat.az, v.mat.ru, id)
     if (v.stock) writeStock(id, v.stock)
   })
   return mustFind(id)

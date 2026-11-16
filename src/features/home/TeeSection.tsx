@@ -3,18 +3,26 @@ import Link from 'next/link'
 import { Heading } from '@/components/ui/Heading'
 import { accentLink } from '@/components/ui/styles'
 import { useCatalog } from '@/context/CatalogContext'
-import { useI18n } from '@/i18n'
+import { catKey, useI18n } from '@/i18n'
+import { activeCategories } from '@/lib/catalog'
 import { ProductGrid } from '@/features/shop/ProductGrid'
 
-/** "[ OUR COLLECTION ] T-SHIRTS" grid from the design. */
+/**
+ * Products, one section per category (T-shirts, Hoodies, …). Every card is a single garment on a mannequin with its price;
+ * click → the product page opens the enlarged view (360°, gallery, sizes, add to cart).
+ */
 export function TeeSection() {
   const { t } = useI18n()
   const { products } = useCatalog()
   return (
-    <section className="container-x pt-12 sm:pt-16" aria-labelledby="tees-h">
-      <Heading eyebrow={`[ ${t('sec.our')} ]`} title={t('cat.T-Shirts')} id="tees-h" className="mb-8 sm:mb-10"
-        action={<Link href="/shop" className={accentLink}>{t('common.viewAll')} →</Link>} />
-      <ProductGrid products={products} />
-    </section>
+    <>
+      {activeCategories(products).map((c, i) => (
+        <section key={c} id={`cat-${c.toLowerCase()}`} className={`container-x scroll-mt-20 ${i === 0 ? 'pt-12 sm:pt-16' : 'pt-16 sm:pt-24'}`} aria-labelledby={`cat-h-${c}`}>
+          <Heading eyebrow={`[ ${t('sec.our')} ]`} title={t(catKey(c))} id={`cat-h-${c}`} className="mb-8 sm:mb-10"
+            action={<Link href={`/shop?category=${c}`} className={accentLink}>{t('common.viewAll')} →</Link>} />
+          <ProductGrid products={products.filter((p) => p.category === c)} />
+        </section>
+      ))}
+    </>
   )
 }

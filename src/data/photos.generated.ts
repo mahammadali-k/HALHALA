@@ -67,14 +67,14 @@ export const photoMeta = {
     "blur": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAAAwBACdASoQABgAPu1iqU2ppaOiMAgBMB2JQBOgA3JveKNs/VeAClqUrIAA/lp2FXjqYqyswfaC5AIwZMLVK7G8t6Vr1/zeZ7hZ/tMbb/DpGALDEz7MKFaOieDZvV9sW3TW1KKBxmuGVb/Az5vRhnJdernDig/2lTXcmLU6ctd8P6idBYl1kdgwuaCqckDBP8PFwYDQaRODj0UGD1UThAAA"
   },
   "tee-bmw": {
-    "width": 1149,
-    "height": 1369,
-    "blur": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAQCdASoMAA4ABABoJaQAAud+ussg9AAA/vLILdJmcWfHAa5njdi9+XDRNZFMsAAAAA=="
+    "width": 1280,
+    "height": 1600,
+    "blur": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAABwAQCdASoMAA8ABABoJaV2AAGIAAD+8Ni2hjQTZe/n1+uK34u+MVAAAAA="
   },
   "tee-ferrari": {
-    "width": 1149,
-    "height": 1369,
-    "blur": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoMAA4ABABoJYwAAudSTHbQAP7yyC3RKXY60rSO9wCBtp1onq54wUFOsAA="
+    "width": 1280,
+    "height": 1600,
+    "blur": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAADwAQCdASoMAA8ABABoJZQAAudnPoTY9gAA/vLIN92i3YoRAD6RAP3QAAA="
   },
   "tee-bmw-classic": {
     "width": 1254,
@@ -87,14 +87,14 @@ export const photoMeta = {
     "blur": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoMAA4ABABoJaQAAudfS0dAAAD+8sgt0PqFan7F/Yl/jzYh/kwvxQDxxmNOnAAA"
   },
   "hoodie-bmw": {
-    "width": 1254,
-    "height": 1254,
-    "blur": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAADQAQCdASoMAAwABABoJaQAAl3NPf4OsAD+5QbYbCqSxeUg+cjdcxZXzFI86d70POWB4M4zIAA="
+    "width": 1280,
+    "height": 1600,
+    "blur": "data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAwAQCdASoMAA8ABABoJaQAA3AA/vGlBGX7R+P2JxgAAA=="
   },
   "hoodie-ferrari": {
-    "width": 1254,
-    "height": 1254,
-    "blur": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACwAQCdASoMAAwABABoJZQAAltjkd4AAP7uyMutZD6jcEdUcQmHS+XZJkYIrq7cIijvc3lAAAA="
+    "width": 1280,
+    "height": 1600,
+    "blur": "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACQAQCdASoMAA8ABABoJZwAAudFyeAA/vKyZ16Mesa17ZpEAAA="
   }
 } as const
 export type PhotoName = keyof typeof photoMeta
