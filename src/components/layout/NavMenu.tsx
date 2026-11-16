@@ -16,7 +16,7 @@ const Chevron = ({ open }: { open: boolean }) => (
 const isActive = (item: NavItem, path: string) =>
   item.to === '/' ? path === '/' : [item.to, ...(item.match ?? [])].some((p) => path === p || path.startsWith(`${p}/`))
 
-const topCls = 'relative pb-1 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.24em] transition-colors hover:text-accent-deep after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform data-[active=true]:after:scale-x-100'
+const topCls = 'relative pb-1 text-sm font-medium transition-colors hover:text-accent-deep after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform data-[active=true]:after:scale-x-100'
 
 function DesktopItem({ item, active, open, onOpen, onClose }: { item: NavItem; active: boolean; open: boolean; onOpen: () => void; onClose: () => void }) {
   const { t } = useI18n()
@@ -57,7 +57,7 @@ function DesktopItem({ item, active, open, onOpen, onClose }: { item: NavItem; a
               {feature && (
                 <Link href={feature.href} onClick={onClose} className="relative m-3 ml-0 block overflow-hidden">
                   <Img image={feature.image} ratio="h-full min-h-44" sizes="176px" />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent p-3 font-mono text-xs uppercase tracking-widest">{t(feature.label)}</span>
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent p-3 text-xs">{t(feature.label)}</span>
                 </Link>
               )}
             </div>
@@ -94,10 +94,10 @@ export function MobileNav({ onNavigate }: { onNavigate: () => void }) {
   return (
     <nav aria-label="Mobile">
       {nav.map((item) => !item.children ? (
-        <Link key={item.to} href={item.to} onClick={onNavigate} aria-current={isActive(item, path) ? 'page' : undefined} className="block border-b border-line py-4 font-display text-xl font-black uppercase hover:text-accent-deep aria-[current=page]:text-accent">{t(item.label)}</Link>
+        <Link key={item.to} href={item.to} onClick={onNavigate} aria-current={isActive(item, path) ? 'page' : undefined} className="block border-b border-line py-4 font-display text-xl font-extrabold hover:text-accent-deep aria-[current=page]:text-accent">{t(item.label)}</Link>
       ) : (
         <details key={item.to} className="group border-b border-line">
-          <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-xl font-black uppercase marker:hidden [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-xl font-extrabold marker:hidden [&::-webkit-details-marker]:hidden">
             {t(item.label)}<span className="text-accent"><Chevron open={false} /></span>
           </summary>
           <ul className="pb-4">

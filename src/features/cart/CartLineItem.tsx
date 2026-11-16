@@ -26,7 +26,7 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
         </div>
         <div className="mt-auto flex items-center justify-between">
           <QuantitySelector value={item.quantity} max={line.maxQuantity} label={t('cart.qtyFor', { name: product.name, size: item.size })} onChange={(n) => setQuantity(item.productId, item.size, n)} />
-          <button onClick={() => remove(item.productId, item.size)} aria-label={t('cart.removeAria', { name: product.name, size: item.size })} className="text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t('cart.remove')}</button>
+          <button onClick={() => remove(item.productId, item.size)} aria-label={t('cart.removeAria', { name: product.name, size: item.size })} className="text-xs text-muted underline-offset-4 hover:text-fg hover:underline">{t('cart.remove')}</button>
         </div>
         {item.quantity >= line.maxQuantity && <p className="text-xs text-accent">{t('cart.max')}</p>}
       </div>

@@ -1,4 +1,6 @@
 const WIDTHS = [480, 800, 1200, 1600] as const
+/** Bump when a photo is replaced under the same name — /images is cached as immutable for a year. */
+const PHOTO_VERSION = 2
 
 /**
  * next/image loader for the pre-generated photo set: `/images/<name>` + a requested width →
@@ -6,5 +8,5 @@ const WIDTHS = [480, 800, 1200, 1600] as const
  */
 export default function imageLoader({ src, width }: { src: string; width: number }) {
   const bucket = WIDTHS.find((w) => w >= width) ?? WIDTHS[WIDTHS.length - 1]
-  return `${src}-${bucket}.webp`
+  return `${src}-${bucket}.webp?v=${PHOTO_VERSION}`
 }

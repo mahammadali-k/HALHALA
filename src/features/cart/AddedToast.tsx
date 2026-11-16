@@ -27,7 +27,7 @@ export function AddedToast() {
           >
             <span className="text-accent"><CheckIcon /></span>
             <span>{t('toast.added', { name: lastAdded.name, size: lastAdded.size })}</span>
-            <button onClick={() => { setShown(false); open() }} className="text-xs uppercase tracking-widest text-accent underline-offset-4 hover:underline">{t('toast.view')}</button>
+            <button onClick={() => { setShown(false); open() }} className="text-xs text-accent underline-offset-4 hover:underline">{t('toast.view')}</button>
           </m.div>
         )}
       </AnimatePresence>

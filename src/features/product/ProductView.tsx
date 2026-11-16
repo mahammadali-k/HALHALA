@@ -76,7 +76,7 @@ function ProductDetails({ product }: { product: Product }) {
           <p className="mt-6 max-w-md leading-relaxed text-muted">{describe(product, lang)}</p>
           {material && (
             <dl className="mt-5 max-w-md border-y border-line py-3 text-sm">
-              <div className="flex gap-4"><dt className="w-24 shrink-0 text-xs uppercase tracking-[0.2em] text-muted">{t('p.material')}</dt><dd>{material}</dd></div>
+              <div className="flex gap-4"><dt className="w-24 shrink-0 text-xs text-muted">{t('p.material')}</dt><dd>{material}</dd></div>
             </dl>
           )}
 
@@ -84,7 +84,7 @@ function ProductDetails({ product }: { product: Product }) {
             <div className="mt-8 space-y-7">
               <SizeSelector product={product} value={size} invalid={sizeError && !size} onChange={(s) => { setSize(s); setSizeError(false); setQty(1) }} />
               <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-muted">{t('p.qty')}</p>
+                <p className="mb-3 text-xs text-muted">{t('p.qty')}</p>
                 <QuantitySelector value={qty} max={Math.max(1, remaining)} onChange={setQty} />
                 {size && remaining <= 0 && <p className="mt-2 text-xs text-accent">{t('p.maxincart')}</p>}
               </div>

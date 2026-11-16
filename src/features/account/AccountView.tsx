@@ -60,7 +60,7 @@ export function AccountView({ initialOrders }: { initialOrders: Order[] }) {
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <section aria-labelledby="orders-h">
-          <h2 id="orders-h" className="font-display text-2xl font-black uppercase text-accent">{t('acc.orders')}</h2>
+          <h2 id="orders-h" className="font-display text-2xl font-extrabold text-accent">{t('acc.orders')}</h2>
           <div className="mt-6 space-y-4">
             {orders.length === 0 && (
               <div className="border border-line p-8 text-center text-muted">
@@ -79,7 +79,7 @@ export function AccountView({ initialOrders }: { initialOrders: Order[] }) {
 
         <div className="space-y-12">
           <form onSubmit={(e) => void saveProfile(e)} className="space-y-4" aria-label={t('acc.profile')}>
-            <h2 className="font-display text-2xl font-black uppercase text-accent">{t('acc.profile')}</h2>
+            <h2 className="font-display text-2xl font-extrabold text-accent">{t('acc.profile')}</h2>
             <p className="text-sm text-muted">{user.email}</p>
             {field('name', 'acc.name', { autoComplete: 'name', required: true, minLength: 2 })}
             {field('phone', 'acc.phone', { type: 'tel', autoComplete: 'tel' })}
@@ -90,7 +90,7 @@ export function AccountView({ initialOrders }: { initialOrders: Order[] }) {
           </form>
 
           <form onSubmit={(e) => void changePw(e)} className="space-y-4" aria-label={t('acc.pw.title')}>
-            <h2 className="font-display text-2xl font-black uppercase text-accent">{t('acc.pw.title')}</h2>
+            <h2 className="font-display text-2xl font-extrabold text-accent">{t('acc.pw.title')}</h2>
             <Field id="pw-cur" label={t('acc.pw.current')}><input id="pw-cur" className="field" type="password" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((s) => ({ ...s, current: e.target.value }))} required /></Field>
             <Field id="pw-new" label={t('acc.pw.new')} hint={t('acc.password.hint')}><input id="pw-new" className="field" type="password" autoComplete="new-password" minLength={8} maxLength={128} value={pw.next} onChange={(e) => setPw((s) => ({ ...s, next: e.target.value }))} required /></Field>
             {pwMsg && <Notice kind={pwMsg.kind}>{pwMsg.text}</Notice>}

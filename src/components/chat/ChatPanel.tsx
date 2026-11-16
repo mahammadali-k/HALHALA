@@ -122,7 +122,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
                   {m.actions.map((a, i) => a.handoff
                     ? <ContactActions key={`h${i}`} message={handoffMessage(userLines, lang)} variant="accent" />
                     : a.href
-                      ? <Link key={a.href + String(i)} href={a.href} onClick={onClose} className="border border-line px-3 py-2 text-xs uppercase tracking-widest transition-colors hover:border-accent-deep hover:text-accent-deep">{a.label}</Link>
+                      ? <Link key={a.href + String(i)} href={a.href} onClick={onClose} className="border border-line px-3 py-2 text-xs transition-colors hover:border-accent-deep hover:text-accent-deep">{a.label}</Link>
                       : null)}
                 </div>
               )}
@@ -140,7 +140,7 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
       <form onSubmit={submit} className="flex border-t border-line">
         <label htmlFor="chat-input" className="sr-only">{t('chat.your')}</label>
         <input id="chat-input" ref={input} value={text} onChange={(e) => setText(e.target.value)} maxLength={500} placeholder={t('chat.placeholder')} autoComplete="off" className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted/60 focus-visible:bg-card" />
-        <button type="submit" disabled={!text.trim() || busy} className="px-4 text-xs uppercase tracking-widest text-accent transition-colors hover:text-fg disabled:opacity-40">{t('chat.send')}</button>
+        <button type="submit" disabled={!text.trim() || busy} className="px-4 text-xs text-accent transition-colors hover:text-fg disabled:opacity-40">{t('chat.send')}</button>
       </form>
     </section>
   )

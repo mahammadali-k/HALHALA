@@ -46,7 +46,7 @@ export function HowItWorks() {
           <li key={n} className="bg-ink-2 p-8">
             <Reveal delay={i * 0.08}>
               <span className="font-display text-h2 text-accent">0{n}</span>
-              <h3 className="mt-3 text-sm uppercase tracking-[0.2em]">{t(`how.${n}.t` as Key)}</h3>
+              <h3 className="mt-3 text-sm">{t(`how.${n}.t` as Key)}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{t(n === '3' ? 'how.3.d.online' : (`how.${n}.d` as Key))}</p>
             </Reveal>
           </li>

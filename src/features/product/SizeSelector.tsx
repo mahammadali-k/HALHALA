@@ -17,7 +17,7 @@ export function SizeSelector({ product, value, onChange, invalid }: Props) {
   const sizes = Object.keys(product.stock) as Size[]
   return (
     <fieldset>
-      <legend className="mb-3 flex w-full justify-between text-xs uppercase tracking-[0.2em] text-muted">
+      <legend className="mb-3 flex w-full justify-between text-xs text-muted">
         <span>{t('p.size')}</span>
         {invalid && <span role="alert" className="text-danger normal-case tracking-normal">{t('p.size.select')}</span>}
       </legend>
@@ -32,9 +32,9 @@ export function SizeSelector({ product, value, onChange, invalid }: Props) {
                 onChange={() => onChange(s)} className="peer sr-only"
               />
               <span
-                className={`flex h-11 min-w-12 items-center justify-center border px-3 text-sm transition-colors
+                className={`flex h-11 min-w-12 items-center justify-center rounded-full border px-4 text-sm transition-colors
                   peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent
-                  ${out ? 'border-line/60 text-muted/40 line-through' : selected ? 'border-accent bg-accent text-ink' : 'border-line hover:border-accent-deep'}`}
+                  ${out ? 'border-line/60 text-muted/40 line-through' : selected ? 'border-white bg-white text-ink' : 'border-line hover:border-accent-deep'}`}
               >
                 {s}
               </span>

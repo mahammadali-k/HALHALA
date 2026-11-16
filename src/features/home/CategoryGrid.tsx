@@ -28,7 +28,7 @@ export function CategoryGrid() {
                   <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
                     <h3 className="display text-3xl">{t(catKey(c))}</h3>
                     <p className="mt-1 text-sm text-muted">{t('shop.count', { n: items.length })}</p>
-                    <span className="mt-3 inline-block border-b border-accent pb-0.5 font-mono text-xs uppercase tracking-[0.2em] text-accent">{t('cols.explore')}</span>
+                    <span className="mt-3 inline-block border-b border-accent pb-0.5 text-xs text-accent">{t('cols.explore')}</span>
                   </div>
                 </Link>
               </Reveal>

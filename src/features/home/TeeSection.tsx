@@ -17,9 +17,9 @@ export function TeeSection() {
   return (
     <>
       {activeCategories(products).map((c, i) => (
-        <section key={c} id={`cat-${c.toLowerCase()}`} className={`container-x scroll-mt-20 ${i === 0 ? 'pt-12 sm:pt-16' : 'pt-16 sm:pt-24'}`} aria-labelledby={`cat-h-${c}`}>
-          <Heading eyebrow={`[ ${t('sec.our')} ]`} title={t(catKey(c))} id={`cat-h-${c}`} className="mb-8 sm:mb-10"
-            action={<Link href={`/shop?category=${c}`} className={accentLink}>{t('common.viewAll')} →</Link>} />
+        <section key={c} id={`cat-${c.toLowerCase()}`} className={`container-x scroll-mt-20 ${i === 0 ? 'pt-16 sm:pt-24' : 'pt-24 sm:pt-32'}`} aria-labelledby={`cat-h-${c}`}>
+          <Heading title={t(catKey(c))} id={`cat-h-${c}`} className="mb-8 sm:mb-12"
+            action={<Link href={`/shop?category=${c}`} className={accentLink}>{t('common.viewAll')}</Link>} />
           <ProductGrid products={products.filter((p) => p.category === c)} />
         </section>
       ))}

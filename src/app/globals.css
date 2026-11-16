@@ -10,16 +10,16 @@
 
 @theme {
   /* Violet-on-black palette (HALHALA concept): near-black surfaces, one purple accent */
-  --color-ink: #09070d;
-  --color-ink-2: #100b18;
-  --color-card: #170f26;
-  --color-violet: #5a30b0;       /* primary button fill */
-  --color-violet-hi: #6c42c8;
+  --color-ink: #07050b;
+  --color-ink-2: #0e0a17;
+  --color-card: #14102a;
+  --color-violet: #6d3fe0;       /* primary button fill */
+  --color-violet-hi: #8256f0;
   --color-accent: #ffffff;       /* accent text / borders — brand book: all text is white */
-  --color-accent-deep: #8a5fe0;  /* hover & pressed states (darker than accent) */
+  --color-accent-deep: #b69cff;  /* hover & pressed states (lighter purple on black) */
   --color-fg: #ffffff;
   --color-muted: rgb(255 255 255 / 0.8);   /* still white — only softened for hierarchy */
-  --color-line: #33244d;
+  --color-line: rgb(255 255 255 / 0.12);
   --color-danger: #f08a9a;
   --color-on-violet: #ffffff;    /* text on violet fills — the same in both themes */
 }
@@ -59,15 +59,15 @@
 
 @layer components {
   .container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
-  .eyebrow { @apply font-mono text-[0.68rem] font-medium uppercase tracking-[0.3em] text-accent; }
+  .eyebrow { @apply text-sm font-medium text-muted; }
   /* [ bracketed mono label ] */
-  .tag { @apply font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted; }
-  .display { @apply font-display font-black uppercase leading-[0.98] tracking-tight [overflow-wrap:break-word] [hyphens:auto]; }
+  .tag { @apply text-xs text-muted; }
+  .display { @apply font-display font-extrabold leading-[1.02] tracking-[-0.035em] [overflow-wrap:break-word] [hyphens:auto]; }
   /* fluid heading sizes — the wide display face must fit 360px screens in every language */
-  .text-h1 { font-size: clamp(1.7rem, 7vw, 4.25rem); }
-  .text-h2 { font-size: clamp(1.5rem, 6vw, 3.25rem); }
+  .text-h1 { font-size: clamp(2rem, 7vw, 5rem); }
+  .text-h2 { font-size: clamp(1.9rem, 6vw, 3.75rem); }
   .field {
-    @apply w-full border border-line bg-ink-2 px-4 py-3 text-sm text-fg placeholder:text-muted/60
+    @apply w-full rounded-xl border border-line bg-ink-2 px-4 py-3 text-sm text-fg placeholder:text-muted/60
       transition-colors hover:border-muted/50 focus:border-accent;
   }
   .field[aria-invalid="true"] { @apply border-danger; }
@@ -89,13 +89,10 @@
 .sway { animation: sway 9s ease-in-out infinite; }
 
 /* Chamfered (cut-corner) frames — FRZN-style. Wrap content: .chamfer-frame > .chamfer-in */
-.chamfer-frame, .chamfer-in {
-  --cut: 18px;
-  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
-}
-.chamfer-frame { padding: 1px; background: var(--color-line); transition: background-color .25s; }
-.chamfer-frame:hover, .chamfer-frame:focus-within { background: var(--color-accent-deep); }
-.chamfer-in { background: var(--color-ink-2); height: 100%; }
+/* (kept class names; the cut corners became soft rounded frames) */
+.chamfer-frame { border-radius: 1.5rem; padding: 1px; background: var(--color-line); transition: background-color .25s; }
+.chamfer-frame:hover, .chamfer-frame:focus-within { background: rgb(130 86 240 / 0.6); }
+.chamfer-in { border-radius: calc(1.5rem - 1px); overflow: hidden; background: var(--color-ink-2); height: 100%; }
 
 /* Purple stage glow behind hero / viewer */
 .glow { background: radial-gradient(60% 55% at 70% 45%, rgba(124, 79, 224, .35), transparent 70%); }

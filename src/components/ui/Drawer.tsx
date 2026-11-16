@@ -35,7 +35,7 @@ export function Drawer({ open, onClose, title, side = 'right', children, footer 
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
-              <h2 className="text-xs font-medium uppercase tracking-[0.25em]">{title}</h2>
+              <h2 className="text-xs font-medium">{title}</h2>
               <button onClick={onClose} aria-label={t('drawer.close', { title })} className="p-1 text-muted hover:text-fg"><CloseIcon /></button>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>

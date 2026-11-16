@@ -21,7 +21,7 @@ export function OrderCard({ order, children, showContact }: { order: Order; chil
           <h3 className="font-display text-2xl">{t('ord.number', { n: order.number })}</h3>
           <p className="text-xs text-muted">{t('ord.placed', { date: orderDate(order.createdAt, lang) })}</p>
         </div>
-        <span className={`border px-2.5 py-1 text-[0.65rem] uppercase tracking-[0.2em] ${badge[order.status]}`}>{t(`st.${order.status}` as Key)}</span>
+        <span className={`border px-2.5 py-1 text-[0.65rem] ${badge[order.status]}`}>{t(`st.${order.status}` as Key)}</span>
       </header>
       <ul className="mt-4 divide-y divide-line text-sm">
         {order.items.map((i) => (

@@ -15,7 +15,7 @@ const SocialLink = ({ href, name, children }: { href: string; name: string; chil
   const { t } = useI18n()
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" aria-label={t('social.aria', { name })} title={name}
-      className="grid h-12 w-12 place-items-center border border-line text-fg transition-colors hover:border-violet hover:bg-violet/30">{children}</a>
+      className="grid h-12 w-12 place-items-center rounded-full border border-line text-fg transition-colors hover:border-violet hover:bg-violet/30">{children}</a>
   )
 }
 const InstagramLogo = () => (
@@ -28,7 +28,7 @@ const TikTokLogo = () => (
 function Column({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="mb-4 font-mono text-[0.68rem] uppercase tracking-[0.25em] text-accent">{title}</h2>
+      <h2 className="mb-4 text-sm font-semibold text-fg">{title}</h2>
       <ul className="space-y-2">{children}</ul>
     </div>
   )
@@ -58,7 +58,7 @@ function Perks() {
       {items.map((i) => (
         <li key={i.title} className="flex flex-col items-center gap-2 px-3 py-5 text-center text-accent first:border-r-0 sm:py-0">
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={i.icon} /></svg>
-          <span className="font-mono text-[0.58rem] font-medium uppercase leading-4 tracking-[0.16em]">{i.title}{i.sub && <><br /><span className="text-muted">{i.sub}</span></>}</span>
+          <span className="text-xs font-medium leading-4">{i.title}{i.sub && <><br /><span className="text-muted">{i.sub}</span></>}</span>
         </li>
       ))}
     </ul>
@@ -75,7 +75,7 @@ export function Footer() {
         <div className="container-x grid items-center gap-8 py-10 lg:grid-cols-[auto_1fr_auto] lg:gap-12">
           <Wordmark className="!text-5xl text-accent" />
           <div>
-            <p className="font-mono text-[0.78rem] font-medium uppercase tracking-[0.22em]">{t('footer.slogan')}</p>
+            <p className="text-lg font-light">{t('footer.slogan')}</p>
             <p className="tag mt-3">{store.est ? t('tag.est', { year: store.est }) : ''}</p>
           </div>
           <Perks />
@@ -117,7 +117,7 @@ export function Footer() {
         <SocialLink href={instagramUrl(store)} name="Instagram"><InstagramLogo /></SocialLink>
         {store.tiktokUrl && <SocialLink href={store.tiktokUrl} name="TikTok"><TikTokLogo /></SocialLink>}
       </div>
-      <div className="border-t border-line py-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted">{t('footer.rights', { year: YEAR, name: site.name })}</div>
+      <div className="border-t border-line py-6 text-center text-xs text-muted">{t('footer.rights', { year: YEAR, name: site.name })}</div>
     </footer>
   )
 }

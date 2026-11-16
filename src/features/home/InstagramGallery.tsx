@@ -14,13 +14,13 @@ export function InstagramGallery() {
   const { store } = useCatalog()
   const profile = instagramUrl(store)
   return (
-    <section id="lookbook" className="container-x scroll-mt-24 pt-12" aria-labelledby="ig-h">
-      <Heading eyebrow={t('look.eyebrow')} title={`@${store.instagramHandle}`} id="ig-h"
+    <section id="lookbook" className="container-x scroll-mt-24 pt-24 sm:pt-32" aria-labelledby="ig-h">
+      <Heading title={`@${store.instagramHandle}`} id="ig-h"
         action={<a href={profile} target="_blank" rel="noreferrer" className={accentLink}>{t('look.follow')}</a>} />
       <ul className="mt-10 columns-2 gap-2 md:columns-3 [&>li]:mb-2 [&>li]:break-inside-avoid">
         {images.social.map((img, i) => (
           <li key={i}>
-            <a href={profile} target="_blank" rel="noreferrer" aria-label={`${img.alt} (opens Instagram)`} className="group block overflow-hidden">
+            <a href={profile} target="_blank" rel="noreferrer" aria-label={`${img.alt} (opens Instagram)`} className="group block overflow-hidden rounded-2xl">
               <div className="transition-transform duration-500 group-hover:scale-105"><Img image={img} ratio={ratios[i % ratios.length]} sizes="(min-width:768px) 33vw, 50vw" /></div>
             </a>
           </li>

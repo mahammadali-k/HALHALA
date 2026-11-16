@@ -74,9 +74,9 @@ export function ShopView() {
       <Heading as="h1" size="lg" eyebrow={t('shop.eyebrow')} title={q ? t('shop.results', { q }) : t('shop.all')} className="mb-10" reveal={false} />
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-y border-line py-3">
-        <button className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] lg:hidden" onClick={() => setDrawer(true)}><FilterIcon /> {t('shop.filters')}</button>
+        <button className="flex items-center gap-2 text-xs lg:hidden" onClick={() => setDrawer(true)}><FilterIcon /> {t('shop.filters')}</button>
         <p className="text-sm text-muted" aria-live="polite">{t('shop.count', { n: list.length })}</p>
-        <label className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {t('shop.sort')}
           <select value={sort} onChange={(e) => update({ sort: e.target.value === 'featured' ? null : e.target.value })} className="field !w-auto py-2 normal-case tracking-normal">
             {sorts.map((s) => <option key={s.id} value={s.id}>{t(s.label)}</option>)}

@@ -30,8 +30,8 @@ export function ContactView() {
           <Field id="c-name" label={t('ct.name')} optional={t('co.optional')}><input id="c-name" value={name} onChange={(e) => { setName(e.target.value); setSent(false) }} autoComplete="name" className="field" /></Field>
           <Field id="c-body" label={t('ct.message')} error={sent && !ready ? t('ct.err') : undefined}><textarea id="c-body" value={body} onChange={(e) => { setBody(e.target.value); setSent(false) }} rows={5} placeholder={t('ct.placeholder')} className="field" aria-invalid={sent && !ready} /></Field>
           {ready
-            ? <><p className="text-xs uppercase tracking-widest text-muted">{t('ct.sendwith')}</p><ContactActions message={message} /></>
-            : <button type="submit" className="text-xs uppercase tracking-widest text-accent">{t('ct.choose')}</button>}
+            ? <><p className="text-xs text-muted">{t('ct.sendwith')}</p><ContactActions message={message} /></>
+            : <button type="submit" className="text-xs text-accent">{t('ct.choose')}</button>}
         </form>
 
         <div>

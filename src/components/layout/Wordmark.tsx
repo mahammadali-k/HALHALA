@@ -7,5 +7,5 @@ import { images } from '@/data/images'
 export function Wordmark({ className = '' }: { className?: string }) {
   return images.logo.src
     ? <img src={images.logo.src} alt="HALHALA" className={`h-7 w-auto ${className}`} />
-    : <span className={`font-brand text-[1.7rem] leading-none tracking-wide ${className}`}>HALHALA</span>
+    : <span className={`font-brand text-[1.7rem] leading-none ${className}`}>HALHALA</span>
 }

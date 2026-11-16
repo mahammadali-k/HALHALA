@@ -4,11 +4,11 @@ import Link from 'next/link'
 import type { ButtonHTMLAttributes, ComponentProps } from 'react'
 
 const base =
-  'inline-flex items-center justify-center gap-2 px-7 py-3.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.22em] transition-[colors,transform] disabled:cursor-not-allowed disabled:opacity-40'
+  'inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-[colors,transform,box-shadow] disabled:cursor-not-allowed disabled:opacity-40'
 const variants = {
-  primary: 'bg-violet text-on-violet hover:bg-violet-hi border border-violet',
-  outline: 'border border-line text-fg hover:border-violet hover:bg-violet/25',
-  accent: 'border border-accent/70 text-accent hover:border-violet hover:bg-violet hover:text-on-violet',
+  primary: 'bg-violet text-on-violet shadow-[0_10px_34px_-10px_rgb(109_63_224/0.9)] hover:bg-violet-hi',
+  outline: 'border border-white/20 text-fg hover:bg-white/10',
+  accent: 'border border-white/40 text-fg hover:bg-violet hover:border-violet',
 }
 type Variant = keyof typeof variants
 

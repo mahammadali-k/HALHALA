@@ -14,7 +14,7 @@ interface Props {
 export function Field({ id, label, optional, hint, error, children }: Props) {
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block font-mono text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+      <label htmlFor={id} className="mb-2 block text-[0.68rem] text-muted">
         {label}{optional && <span className="normal-case tracking-normal">{optional}</span>}
       </label>
       {children}

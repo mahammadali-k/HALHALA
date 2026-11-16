@@ -21,7 +21,7 @@ interface Props { filters: Filters; onChange: (patch: Partial<Filters>) => void;
 function Group({ legend, children }: { legend: string; children: React.ReactNode }) {
   return (
     <fieldset className="border-b border-line pb-6">
-      <legend className="mb-3 text-[0.7rem] uppercase tracking-[0.25em] text-accent">{legend}</legend>
+      <legend className="mb-3 text-[0.7rem] text-accent">{legend}</legend>
       <div className="space-y-2">{children}</div>
     </fieldset>
   )
@@ -55,7 +55,7 @@ export function FilterPanel({ filters, onChange, onReset }: Props) {
         <input type="checkbox" checked={filters.inStock} onChange={(e) => onChange({ inStock: e.target.checked })} className="accent-[#B69A68]" />
         {t('f.instock')}
       </label>
-      <button onClick={onReset} className="text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t('f.reset')}</button>
+      <button onClick={onReset} className="text-xs text-muted underline-offset-4 hover:text-fg hover:underline">{t('f.reset')}</button>
     </div>
   )
 }

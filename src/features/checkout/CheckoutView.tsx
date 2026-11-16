@@ -98,13 +98,13 @@ export function CheckoutView() {
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_24rem] lg:gap-12">
         <form onSubmit={(e) => void submit(e)} noValidate className="space-y-6" aria-label={t('co.form')}>
-          <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-accent">{t('co.contact')}</h2>
+          <h2 className="text-xs text-accent">{t('co.contact')}</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             {text('name', 'co.name', { autoComplete: 'name' })}
             {text('phone', 'co.phone', { type: 'tel', inputMode: 'tel', autoComplete: 'tel' })}
           </div>
           {text('email', 'co.email', { type: 'email', autoComplete: 'email' }, true)}
-          <h2 className="pt-4 font-mono text-xs uppercase tracking-[0.25em] text-accent">{t('co.address.h')}</h2>
+          <h2 className="pt-4 text-xs text-accent">{t('co.address.h')}</h2>
           {text('city', 'co.city', { autoComplete: 'address-level2' })}
           {text('address', 'co.address', { autoComplete: 'street-address' })}
           <Field id="notes" label={t('co.notes')} optional={t('co.optional')}>
@@ -112,7 +112,7 @@ export function CheckoutView() {
           </Field>
 
           <fieldset className="space-y-3">
-            <legend className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-accent">{t('co.pay')}</legend>
+            <legend className="mb-3 text-xs text-accent">{t('co.pay')}</legend>
             {config.payments.map((m) => (
               <label key={m} className="flex cursor-pointer items-start gap-3 border border-line p-4 has-[:checked]:border-accent-deep has-[:checked]:bg-card">
                 <input type="radio" name="pay" value={m} checked={method === m} onChange={() => setMethod(m)} className="mt-1 accent-[#8a5fe0]" />
@@ -126,7 +126,7 @@ export function CheckoutView() {
         </form>
 
         <aside className="h-fit border border-line bg-card p-6" aria-label={t('co.summary')}>
-          <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-accent">{t('co.summary')}</h2>
+          <h2 className="text-xs text-accent">{t('co.summary')}</h2>
           <ul className="mt-5 divide-y divide-line">
             {lines.map((l) => (
               <li key={l.key} className="flex justify-between gap-3 py-3 text-sm">
@@ -138,7 +138,7 @@ export function CheckoutView() {
           {showFee && <div className="flex justify-between border-t border-line pt-3 text-sm"><span className="text-muted">{t('co.fee')}</span><span className="tabular-nums">{fee === 0 ? t('co.fee.free') : formatPrice(fee)}</span></div>}
           <div className="mt-3 flex justify-between border-t border-line pt-4"><span>{t('co.total')}</span><span className="tabular-nums">{formatPrice(total + fee)}</span></div>
           {!showFee && <p className="mt-2 text-xs text-muted">{t('co.deliveryNote')}</p>}
-          <Link href="/cart" className="mt-4 inline-block font-mono text-xs uppercase tracking-widest text-muted underline-offset-4 hover:text-fg hover:underline">{t('co.editcart')}</Link>
+          <Link href="/cart" className="mt-4 inline-block text-xs text-muted underline-offset-4 hover:text-fg hover:underline">{t('co.editcart')}</Link>
         </aside>
       </div>
     </div>
